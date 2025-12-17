@@ -6,7 +6,7 @@
 
     <groupId>cc.synkdev</groupId>
     <artifactId>DeathLogger</artifactId>
-    <version>3.0</version>
+    <version>3.0.1</version>
     <packaging>jar</packaging>
 
     <name>DeathLogger</name>
@@ -100,8 +100,8 @@
         </dependency>
         <dependency>
             <groupId>cc.synkdev</groupId>
-            <artifactId>SynkLibs</artifactId>
-            <version>1.9</version>
+            <artifactId>NexusCore</artifactId>
+            <version>1.9.1</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

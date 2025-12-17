@@ -4,7 +4,7 @@ import cc.synkdev.deathLogger.DeathLogger;
 import cc.synkdev.deathLogger.gui.PlayerGui;
 import cc.synkdev.deathLogger.gui.PlayersGui;
 import cc.synkdev.deathLogger.object.Death;
-import cc.synkdev.synkLibs.bukkit.Lang;
+import cc.synkdev.nexusCore.bukkit.Lang;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;

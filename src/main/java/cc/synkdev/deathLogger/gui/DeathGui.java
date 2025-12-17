@@ -3,7 +3,7 @@ package cc.synkdev.deathLogger.gui;
 import cc.synkdev.deathLogger.DeathLogger;
 import cc.synkdev.deathLogger.Util;
 import cc.synkdev.deathLogger.object.Death;
-import cc.synkdev.synkLibs.bukkit.Lang;
+import cc.synkdev.nexusCore.bukkit.Lang;
 import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
 import net.kyori.adventure.text.Component;
