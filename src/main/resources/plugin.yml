@@ -4,12 +4,5 @@ main: cc.synkdev.deathLogger.DeathLogger
 api-version: '1.13'
 authors: [ Synk ]
 depend:
-  - SynkLibs
-commands:
-  getdeath:
-    usage: "/getdeath"
-  lastdeaths:
-    usage: "/lastdeaths"
-  dl:
-    usage: "/dl"
+  - NexusCore
 
