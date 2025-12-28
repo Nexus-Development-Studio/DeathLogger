@@ -26,10 +26,13 @@ public class DeathInventoryGui {
         gui.getFiller().fillBottom(ItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE).name(Component.text(" ")).asGuiItem());
 
         int index = 0;
+        boolean take = p.hasPermission("deathlogger.inventory.take");
 
         for (ItemStack item : d.getInv()) {
             if (item != null) {
-                gui.setItem(index, ItemBuilder.from(item).asGuiItem(event -> event.getWhoClicked().getInventory().addItem(item)));
+                gui.setItem(index, ItemBuilder.from(item).asGuiItem(event -> {
+                    if (take) event.getWhoClicked().getInventory().addItem(item);
+                }));
             }
             index++;
         }
