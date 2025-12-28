@@ -8,6 +8,7 @@ import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -33,6 +34,10 @@ public class PlayerGui {
         }
 
         gui.getFiller().fillBottom(ItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE).name(Component.text(" ")).asGuiItem());
+        if (list == null) {
+            gui.setItem(3, 5, ItemBuilder.from(Material.BARRIER).name(Component.text(ChatColor.RED+Lang.translate("noRecentDeath", core))).asGuiItem());
+            return gui;
+        }
         int totalPages = (list.size() + 45 - 1) / 45;
         if (page < totalPages) {
             gui.setItem(6, 6, ItemBuilder.from(Material.ARROW).name(Component.text(Lang.translate("nextPage", core))).asGuiItem(event -> gui(uuid, page+1, close).open((Player) event.getWhoClicked())));
@@ -44,7 +49,7 @@ public class PlayerGui {
         for (int i = (page-1)*45; i < page*45; i++) {
             if (list.size() <= i) break;
             Death d = list.get(i);
-            gui.addItem(ItemBuilder.from(Material.SKELETON_SKULL).name(Component.text(Lang.translate("playerSpecDeath", core, OP.getName(), d.getId()+""))).asGuiItem(event -> new DeathGui().gui(d, false).open(event.getWhoClicked())));
+            gui.addItem(ItemBuilder.from(Material.SKELETON_SKULL).name(Component.text(Lang.translate("playerSpecDeath", core, OP.getName(), d.getId()+""))).asGuiItem(event -> new DeathGui().gui(d, false, (Player) event.getWhoClicked()).open(event.getWhoClicked())));
 
         }
 

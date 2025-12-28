@@ -3,6 +3,7 @@ package cc.synkdev.deathLogger.command;
 import cc.synkdev.deathLogger.DeathLogger;
 import cc.synkdev.deathLogger.gui.PlayerGui;
 import cc.synkdev.deathLogger.gui.PlayersGui;
+import cc.synkdev.deathLogger.manager.FileManager;
 import cc.synkdev.deathLogger.object.Death;
 import cc.synkdev.nexusCore.bukkit.Lang;
 import co.aikar.commands.BaseCommand;
@@ -38,7 +39,7 @@ public class MainCommand extends BaseCommand {
         }
 
         OfflinePlayer oP = Bukkit.getOfflinePlayer(args[0]);
-        if (oP == null || !oP.hasPlayedBefore()) {
+        if (oP == null || (!oP.hasPlayedBefore() && !oP.isOnline())) {
             p.sendMessage(core.prefix()+Lang.translate("noPlayer", core));
             return;
         }
@@ -49,8 +50,10 @@ public class MainCommand extends BaseCommand {
     @Subcommand("reload")
     @CommandPermission("deathlogger.reload")
     public void onReload(CommandSender sender) {
+        core.reloadConfig();
         core.langMap.clear();
-        core.langMap.putAll(Lang.init(core, new File(core.getDataFolder(), "lang.json")));
+        core.langMap.putAll(Lang.init(core, new File(core.getDataFolder(), "lang.json"), core.lang));
+        FileManager.read();
         sender.sendMessage(ChatColor.GREEN + Lang.translate("reloaded", core));
     }
 }

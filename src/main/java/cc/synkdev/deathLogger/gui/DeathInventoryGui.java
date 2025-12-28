@@ -34,19 +34,29 @@ public class DeathInventoryGui {
             index++;
         }
 
-        gui.setItem(6, 5, ItemBuilder.from(Material.BARRIER).name(Component.text(Lang.translate("back", core))).asGuiItem(event -> new DeathGui().gui(d, false).open(p)));
+        gui.setItem(6, 5, ItemBuilder.from(Material.BARRIER).name(Component.text(Lang.translate("back", core))).asGuiItem(event -> new DeathGui().gui(d, false, (Player) event.getWhoClicked()).open(p)));
         gui.setItem(6, 3, ItemBuilder.from(Material.CHEST)
                 .name(Component.text(Lang.translate("giveYourself", core)))
                         .lore(Component.text(Lang.translate("giveWarn", core, p.getName())))
-                .asGuiItem(event -> event.getWhoClicked().getInventory().setContents(d.getInv())));
+                .asGuiItem(event -> {
+                    if (event.getWhoClicked().hasPermission("deathlogger.inventory.take")) {
+                        event.getWhoClicked().getInventory().setContents(d.getInv());
+                    } else {
+                        event.getWhoClicked().sendMessage(Lang.translate("noPermission", core));
+                    }
+                }));
         gui.setItem(6, 7, ItemBuilder.from(Material.CHEST).name(Component.text(Lang.translate("giveInv", core)))
                 .lore(Component.text(Lang.translate("giveWarn", core, Bukkit.getOfflinePlayer(d.getPlayer()).getName()))).asGuiItem(event -> {
-            OfflinePlayer oP = Bukkit.getOfflinePlayer(d.getPlayer());
-            if (oP.isOnline()) {
-                oP.getPlayer().getInventory().setContents(d.getInv());
-            } else {
-                event.getWhoClicked().sendMessage(core.prefix()+Lang.translate("offline", core));
-            }
+                    if (event.getWhoClicked().hasPermission("deathlogger.inventory.take")) {
+                        OfflinePlayer oP = Bukkit.getOfflinePlayer(d.getPlayer());
+                        if (oP.isOnline()) {
+                            oP.getPlayer().getInventory().setContents(d.getInv());
+                        } else {
+                            event.getWhoClicked().sendMessage(core.prefix() + Lang.translate("offline", core));
+                        }
+                    } else {
+                        event.getWhoClicked().sendMessage(Lang.translate("noPermission", core));
+                    }
         }));
         return gui;
     }

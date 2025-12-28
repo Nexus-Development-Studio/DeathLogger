@@ -5,4 +5,31 @@ api-version: '1.13'
 authors: [ Synk ]
 depend:
   - NexusCore
-
+permissions:
+  deathlogger.teleport.all:
+    description: Teleport to any death's location
+    default: op
+  deathlogger.teleport.self:
+    description: Teleport to your own deaths' locations
+    default: op
+  deathlogger.inventory.view.all:
+    description: View the inventory from any death
+    default: op
+  deathlogger.inventory.view.self:
+    description: View the inventory from your own deaths
+    default: op
+  deathlogger.inventory.take:
+    description: Give yourself the inventory from deaths
+    default: op
+  deathlogger.inventory.give:
+    description: Give the players the inventory from their deaths
+    default: op
+  deathlogger.players:
+    description: View the players menu
+    default: true
+  deathlogger.player:
+    description: View the player (specific player's deaths) menu
+    default: true
+  deathlogger.reload:
+    description: Reload the plugin
+    default: op
