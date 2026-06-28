@@ -1,18 +1,22 @@
 package cc.synkdev.deathLogger;
 
+import cc.synkdev.bstats.bukkit.Metrics;
+import cc.synkdev.bstats.charts.SingleLineChart;
 import cc.synkdev.deathLogger.command.DeathsCmd;
 import cc.synkdev.deathLogger.command.MainCommand;
 import cc.synkdev.deathLogger.listener.DeathListener;
 import cc.synkdev.deathLogger.manager.FileManager;
+import cc.synkdev.deathLogger.manager.integration.SkinUtils;
 import cc.synkdev.deathLogger.object.Death;
 import cc.synkdev.nexusCore.bukkit.Analytics;
 import cc.synkdev.nexusCore.bukkit.Lang;
+import cc.synkdev.nexusCore.bukkit.NexusUtils;
 import cc.synkdev.nexusCore.components.NexusPlugin;
 import co.aikar.commands.BukkitCommandManager;
 import co.aikar.commands.MessageKeys;
 import lombok.Getter;
-import org.bstats.bukkit.Metrics;
-import org.bstats.charts.SingleLineChart;
+import net.skinsrestorer.api.SkinsRestorer;
+import net.skinsrestorer.api.SkinsRestorerProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -30,25 +34,25 @@ import java.util.Map;
 @Getter
 public final class DeathLogger extends JavaPlugin implements NexusPlugin {
     @Getter private static DeathLogger instance;
+    @Getter private SkinsRestorer skinsRestorerAPI;
     @Getter private final String prefix = ChatColor.translateAlternateColorCodes('&', "&8[&6DeathLogger&8] » &r");
     public List<Death> deaths = new ArrayList<>();
     public Map<String, String> langMap = new HashMap<>();
     private File configFile = new File(getDataFolder(), "config.yml");
     public YamlConfiguration config;
     public String lang;
+    public SkinUtils skinUtils;
 
 
     public void onEnable() {
         instance = this;
-        updateConfig();
+        config = NexusUtils.updateConfig(this);
         loadConfig();
-        Analytics.registerSpl(this);
         if (!getDataFolder().exists()) getDataFolder().mkdir();
 
         FileManager.create();
         FileManager.read();
-        langMap.clear();
-        langMap.putAll(Lang.init(this, new File(getDataFolder(), "lang.json"), lang));
+        NexusUtils.initLang(this, langMap, lang);
 
         BukkitCommandManager bcm = new BukkitCommandManager(this);
 
@@ -58,49 +62,16 @@ public final class DeathLogger extends JavaPlugin implements NexusPlugin {
         Bukkit.getPluginManager().registerEvents(new DeathListener(), this);
         Metrics metrics = new Metrics(this, 22687);
         metrics.addCustomChart(new SingleLineChart("death", () -> deaths.size()));
+
+        if (Bukkit.getPluginManager().isPluginEnabled("SkinsRestorer")) {
+            this.skinsRestorerAPI = SkinsRestorerProvider.get();
+            this.skinUtils = new SkinUtils();
+        }
     }
 
     public void loadConfig() {
         reloadConfig();
         lang = getConfig().getString("lang");
-    }
-
-    private void updateConfig() {
-        if (!this.getDataFolder().exists()) this.getDataFolder().mkdirs();
-        try {
-            if (!configFile.exists()) {
-                try {
-                    Files.copy(getResource("config.yml"), configFile.toPath());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            } else {
-                File temp = new File(getDataFolder(), "temp-config-"+System.currentTimeMillis()+".yml");
-                try {
-                    Files.copy(getResource("config.yml"), temp.toPath());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                FileConfiguration tempConfig = YamlConfiguration.loadConfiguration(temp);
-                FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
-                boolean changed = false;
-                for (String key : tempConfig.getKeys(true)) {
-                    if (!config.contains(key)) {
-                        config.set(key, tempConfig.get(key));
-                        changed = true;
-                    }
-                }
-
-                if (changed) {
-                    config.save(configFile);
-                }
-
-                temp.delete();
-            }
-            config = YamlConfiguration.loadConfiguration(configFile);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
 
@@ -113,7 +84,7 @@ public final class DeathLogger extends JavaPlugin implements NexusPlugin {
 
     @Override
     public String ver() {
-        return "3.1";
+        return "3.2";
     }
 
     @Override

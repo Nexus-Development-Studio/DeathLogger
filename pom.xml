@@ -6,13 +6,13 @@
 
     <groupId>cc.synkdev</groupId>
     <artifactId>DeathLogger</artifactId>
-    <version>3.1</version>
+    <version>3.2</version>
     <packaging>jar</packaging>
 
     <name>DeathLogger</name>
 
     <properties>
-        <java.version>17</java.version>
+        <java.version>25</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -26,20 +26,19 @@
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.46</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>3.5.3</version>
-                <configuration>
-                    <relocations>
-                        <relocation>
-                            <pattern>org.bstats</pattern>
-                            <shadedPattern>cc.synkdev.deathLogger</shadedPattern>
-                        </relocation>
-                    </relocations>
-                </configuration>
+                <version>3.6.2</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -67,30 +66,18 @@
             <id>sonatype</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
+        <repository>
+            <id>codemc</id>
+            <url>https://repo.codemc.org/repository/maven-public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
         <dependency>
-            <groupId>org.bstats</groupId>
-            <artifactId>bstats-bukkit</artifactId>
-            <version>3.0.2</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.34</version>
+            <version>1.18.46</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>dev.triumphteam</groupId>
-            <artifactId>triumph-gui</artifactId>
-            <version>3.1.13-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>co.aikar</groupId>
-            <artifactId>acf-bukkit</artifactId>
-            <version>0.5.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>
@@ -101,7 +88,13 @@
         <dependency>
             <groupId>cc.synkdev</groupId>
             <artifactId>NexusCore</artifactId>
-            <version>1.10</version>
+            <version>2.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.skinsrestorer</groupId>
+            <artifactId>skinsrestorer-api</artifactId>
+            <version>15.12.3</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

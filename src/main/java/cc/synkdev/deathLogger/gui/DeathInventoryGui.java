@@ -1,11 +1,10 @@
 package cc.synkdev.deathLogger.gui;
 
 import cc.synkdev.deathLogger.DeathLogger;
-import cc.synkdev.deathLogger.Util;
 import cc.synkdev.deathLogger.object.Death;
 import cc.synkdev.nexusCore.bukkit.Lang;
-import dev.triumphteam.gui.builder.item.ItemBuilder;
-import dev.triumphteam.gui.guis.Gui;
+import cc.synkdev.triumph.builder.item.ItemBuilder;
+import cc.synkdev.triumph.guis.Gui;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

@@ -1,9 +1,9 @@
 package cc.synkdev.deathLogger;
 
 import cc.synkdev.deathLogger.object.Death;
-import cc.synkdev.deathLogger.object.DeathItem;
+import cc.synkdev.nexusCore.bukkit.Lang;
 import org.bukkit.Bukkit;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.ChatColor;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -30,5 +30,13 @@ public class Util {
         return Instant.ofEpochSecond(unixSeconds/1000)
                 .atZone(ZoneId.systemDefault())
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    }
+
+    public static void debug(String s) {
+        if (core.getConfig().getBoolean("debug")) log(core.prefix()+ ChatColor.DARK_GRAY+"[DEBUG]"+ChatColor.GOLD+s);
+    }
+
+    public static String translate(String key, String... params) {
+        return Lang.translate(key, core, params);
     }
 }

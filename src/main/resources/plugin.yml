@@ -5,11 +5,19 @@ api-version: '1.13'
 authors: [ Synk ]
 depend:
   - NexusCore
+softdepend:
+  - SkinsRestorer
 permissions:
   deathlogger.teleport.all:
     description: Teleport to any death's location
     default: op
   deathlogger.teleport.self:
+    description: Teleport to your own deaths' locations
+    default: op
+  deathlogger.coordinates.all:
+    description: Teleport to any death's location
+    default: op
+  deathlogger.coordinates.self:
     description: Teleport to your own deaths' locations
     default: op
   deathlogger.inventory.view.all:

@@ -4,8 +4,9 @@ import cc.synkdev.deathLogger.DeathLogger;
 import cc.synkdev.deathLogger.Util;
 import cc.synkdev.deathLogger.object.Death;
 import cc.synkdev.nexusCore.bukkit.Lang;
-import dev.triumphteam.gui.builder.item.ItemBuilder;
-import dev.triumphteam.gui.guis.Gui;
+import cc.synkdev.triumph.builder.item.ItemBuilder;
+import cc.synkdev.triumph.builder.item.SkullBuilder;
+import cc.synkdev.triumph.guis.Gui;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -40,7 +41,14 @@ public class PlayersGui {
             if (map.size() <= i) break;
             UUID uuid = new ArrayList<>(map.keySet()).get(i);
             OfflinePlayer OP = Bukkit.getOfflinePlayer(uuid);
-            gui.addItem(ItemBuilder.skull().owner(OP).name(Component.text(Lang.translate("playersDeath", core, OP.getName()))).asGuiItem(event -> new PlayerGui().gui(uuid, 1, false).open(event.getWhoClicked())));
+            Util.debug("Name: "+OP.getName());
+            SkullBuilder builder;
+            if (core.getSkinsRestorerAPI()!=null && OP.isOnline()) {
+                builder = ItemBuilder.skull().texture(core.skinUtils.getSkinValue(core.skinUtils.getPlayerSkin(OP.getPlayer())));
+            } else {
+                builder = ItemBuilder.skull().owner(OP);
+            }
+            gui.addItem(builder.name(Component.text(Lang.translate("playersDeath", core, OP.getName()))).asGuiItem(event -> new PlayerGui().gui(uuid, 1, false).open(event.getWhoClicked())));
 
         }
 
