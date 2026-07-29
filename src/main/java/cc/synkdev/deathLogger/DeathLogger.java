@@ -1,5 +1,7 @@
 package cc.synkdev.deathLogger;
 
+import cc.synkdev.acf.BukkitCommandManager;
+import cc.synkdev.acf.MessageKeys;
 import cc.synkdev.bstats.bukkit.Metrics;
 import cc.synkdev.bstats.charts.SingleLineChart;
 import cc.synkdev.deathLogger.command.DeathsCmd;
@@ -8,24 +10,18 @@ import cc.synkdev.deathLogger.listener.DeathListener;
 import cc.synkdev.deathLogger.manager.FileManager;
 import cc.synkdev.deathLogger.manager.integration.SkinUtils;
 import cc.synkdev.deathLogger.object.Death;
-import cc.synkdev.nexusCore.bukkit.Analytics;
 import cc.synkdev.nexusCore.bukkit.Lang;
 import cc.synkdev.nexusCore.bukkit.NexusUtils;
 import cc.synkdev.nexusCore.components.NexusPlugin;
-import co.aikar.commands.BukkitCommandManager;
-import co.aikar.commands.MessageKeys;
 import lombok.Getter;
 import net.skinsrestorer.api.SkinsRestorer;
 import net.skinsrestorer.api.SkinsRestorerProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

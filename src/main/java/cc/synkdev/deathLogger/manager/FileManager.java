@@ -8,9 +8,9 @@ import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import cc.synkdev.json.JSONArray;
+import cc.synkdev.json.JSONException;
+import cc.synkdev.json.JSONObject;
 
 import java.io.*;
 import java.nio.file.Files;

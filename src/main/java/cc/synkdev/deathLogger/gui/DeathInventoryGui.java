@@ -5,7 +5,7 @@ import cc.synkdev.deathLogger.object.Death;
 import cc.synkdev.nexusCore.bukkit.Lang;
 import cc.synkdev.triumph.builder.item.ItemBuilder;
 import cc.synkdev.triumph.guis.Gui;
-import net.kyori.adventure.text.Component;
+import cc.synkdev.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
