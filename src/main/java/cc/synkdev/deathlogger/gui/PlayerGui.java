@@ -1,8 +1,8 @@
-package cc.synkdev.deathLogger.gui;
+package cc.synkdev.deathlogger.gui;
 
-import cc.synkdev.deathLogger.DeathLogger;
-import cc.synkdev.deathLogger.Util;
-import cc.synkdev.deathLogger.object.Death;
+import cc.synkdev.deathlogger.DeathLogger;
+import cc.synkdev.deathlogger.Util;
+import cc.synkdev.deathlogger.object.Death;
 import cc.synkdev.nexusCore.bukkit.Lang;
 import cc.synkdev.triumph.builder.item.ItemBuilder;
 import cc.synkdev.triumph.guis.Gui;
@@ -20,6 +20,7 @@ public class PlayerGui {
     private final DeathLogger core = DeathLogger.getInstance();
     public Gui gui(UUID uuid, int page, boolean close) {
         List<Death> list = Util.getPlayersDeaths().get(uuid);
+        if (list != null) list = list.reversed();
         OfflinePlayer OP = Bukkit.getOfflinePlayer(uuid);
         Gui gui = Gui.gui()
                 .disableAllInteractions()

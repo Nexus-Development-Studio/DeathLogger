@@ -1,8 +1,10 @@
-package cc.synkdev.deathLogger.gui;
+package cc.synkdev.deathlogger.gui;
 
-import cc.synkdev.deathLogger.DeathLogger;
-import cc.synkdev.deathLogger.Util;
-import cc.synkdev.deathLogger.object.Death;
+import cc.synkdev.deathlogger.DeathLogger;
+import cc.synkdev.deathlogger.Util;
+import cc.synkdev.deathlogger.manager.ConfigManager;
+import cc.synkdev.deathlogger.manager.integration.SkinUtils;
+import cc.synkdev.deathlogger.object.Death;
 import cc.synkdev.nexusCore.bukkit.Lang;
 import cc.synkdev.triumph.builder.item.ItemBuilder;
 import cc.synkdev.triumph.builder.item.SkullBuilder;
@@ -43,8 +45,8 @@ public class PlayersGui {
             OfflinePlayer OP = Bukkit.getOfflinePlayer(uuid);
             Util.debug("Name: "+OP.getName());
             SkullBuilder builder;
-            if (core.getSkinsRestorerAPI()!=null && OP.isOnline()) {
-                builder = ItemBuilder.skull().texture(core.skinUtils.getSkinValue(core.skinUtils.getPlayerSkin(OP.getPlayer())));
+            if (core.getSkinsRestorerAPI()!=null && ConfigManager.isUseSkinsRestorer()) {
+                builder = ItemBuilder.skull().texture(core.skinUtils.getSkinValue(SkinUtils.getSkin(OP.getUniqueId(), OP.getName()).orElse(null)));
             } else {
                 builder = ItemBuilder.skull().owner(OP);
             }

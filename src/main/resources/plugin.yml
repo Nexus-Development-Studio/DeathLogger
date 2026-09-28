@@ -1,6 +1,6 @@
 name: DeathLogger
 version: '${project.version}'
-main: cc.synkdev.deathLogger.DeathLogger
+main: cc.synkdev.deathlogger.DeathLogger
 api-version: '1.13'
 authors: [ Synk ]
 depend:
@@ -40,4 +40,22 @@ permissions:
     default: true
   deathlogger.reload:
     description: Reload the plugin
+    default: op
+  deathlogger.lastdeath.self:
+    description: View the time since your last death
+    default: true
+  deathlogger.lastdeath.all:
+    description: View the time since a player's last death
+    default: true
+  deathlogger.respawn.self:
+    description: View the location of your last respawn
+    default: true
+  deathlogger.respawn.all:
+    description: View the location of a player's last respawn
+    default: true
+  deathlogger.respawn.teleport.all:
+    description: Teleport to any player's respawn location
+    default: op
+  deathlogger.respawn.teleport.self:
+    description: Teleport to your own respawn locations
     default: op

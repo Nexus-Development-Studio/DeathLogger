@@ -1,2 +1,8 @@
 #Set this to custom to make your own translations.
 lang: en
+use-skinsrestorer: true #If you have SkinsRestorer installed, the plugin will use player skins from SkinsRestorer in GUIs.
+announce-deaths:
+  enabled: true #Information will be displayed for players who have permission to see them through the GUI.
+  self-only: false #If enabled, players will only see their own deaths in the GUI.
+  time-since-last-death: true #If enabled, the plugin will display the time since the player last died in the death message.
+  overwrite-vanilla-death-messages: false #If enabled, the plugin will overwrite the vanilla death messages with its own.

@@ -1,13 +1,13 @@
-package cc.synkdev.deathLogger.command;
+package cc.synkdev.deathlogger.command;
 
 import cc.synkdev.acf.BaseCommand;
 import cc.synkdev.acf.annotation.CommandAlias;
 import cc.synkdev.acf.annotation.CommandCompletion;
 import cc.synkdev.acf.annotation.CommandPermission;
 import cc.synkdev.acf.annotation.Default;
-import cc.synkdev.deathLogger.DeathLogger;
-import cc.synkdev.deathLogger.gui.PlayerGui;
-import cc.synkdev.deathLogger.gui.PlayersGui;
+import cc.synkdev.deathlogger.DeathLogger;
+import cc.synkdev.deathlogger.gui.PlayerGui;
+import cc.synkdev.deathlogger.gui.PlayersGui;
 import cc.synkdev.nexusCore.bukkit.Lang;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;

@@ -1,7 +1,7 @@
-package cc.synkdev.deathLogger.gui;
+package cc.synkdev.deathlogger.gui;
 
-import cc.synkdev.deathLogger.DeathLogger;
-import cc.synkdev.deathLogger.object.Death;
+import cc.synkdev.deathlogger.DeathLogger;
+import cc.synkdev.deathlogger.object.Death;
 import cc.synkdev.nexusCore.bukkit.Lang;
 import cc.synkdev.triumph.builder.item.ItemBuilder;
 import cc.synkdev.triumph.guis.Gui;

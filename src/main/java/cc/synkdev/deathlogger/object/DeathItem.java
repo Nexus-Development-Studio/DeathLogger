@@ -1,4 +1,4 @@
-package cc.synkdev.deathLogger.object;
+package cc.synkdev.deathlogger.object;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

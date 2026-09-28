@@ -1,8 +1,8 @@
-package cc.synkdev.deathLogger.manager;
+package cc.synkdev.deathlogger.manager;
 
-import cc.synkdev.deathLogger.DeathLogger;
-import cc.synkdev.deathLogger.Util;
-import cc.synkdev.deathLogger.object.Death;
+import cc.synkdev.deathlogger.DeathLogger;
+import cc.synkdev.deathlogger.Util;
+import cc.synkdev.deathlogger.object.Death;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
@@ -11,6 +11,7 @@ import org.bukkit.util.io.BukkitObjectOutputStream;
 import cc.synkdev.json.JSONArray;
 import cc.synkdev.json.JSONException;
 import cc.synkdev.json.JSONObject;
+import org.jspecify.annotations.NonNull;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -40,12 +41,8 @@ public class FileManager {
                 JSONObject deathObj = new JSONObject();
                 deathObj.put("id", d.getId());
 
-                JSONObject locObj = new JSONObject();
-                locObj.put("world", d.getLoc().getWorld().getName());
-                locObj.put("x", d.getLoc().getBlockX());
-                locObj.put("y", d.getLoc().getBlockY());
-                locObj.put("z", d.getLoc().getBlockZ());
-                deathObj.put("location", locObj);
+                deathObj.put("location", getLocObj(d.getLoc()));
+                if (d.getRespawnLoc() != null) deathObj.put("respawnLocation", getLocObj(d.getRespawnLoc()));
 
                 deathObj.put("message", d.getMsg());
                 deathObj.put("timestamp", d.getUnix());
@@ -58,6 +55,16 @@ public class FileManager {
         }
         return arr;
     }
+
+    private static JSONObject getLocObj(Location loc) {
+        JSONObject locObj = new JSONObject();
+        locObj.put("world", loc.getWorld().getName());
+        locObj.put("x", loc.getBlockX());
+        locObj.put("y", loc.getBlockY());
+        locObj.put("z", loc.getBlockZ());
+        return locObj;
+    }
+
     public static void insert(Death d) {
         core.deaths.add(d);
 
@@ -82,10 +89,15 @@ public class FileManager {
 
                     JSONObject locObj = death.getJSONObject("location");
                     Location loc = new Location(Bukkit.getWorld(locObj.getString("world")), locObj.getInt("x"), locObj.getInt("y"), locObj.getInt("z"));
+                    Location respawnLoc = null;
+                    if (death.has("respawnLocation")) {
+                        JSONObject respawnLocObj =  death.getJSONObject("respawnLocation");
+                        respawnLoc =  new Location(Bukkit.getWorld(respawnLocObj.getString("world")), respawnLocObj.getInt("x"), respawnLocObj.getInt("y"), respawnLocObj.getInt("z"));
+                    }
                     String message = death.getString("message");
                     long unix = death.getLong("timestamp");
                     ItemStack[] inv = deserializeInventory(death.getString("inventory"));
-                    core.getDeaths().add(new Death(id, uuid, loc, message, inv, unix));
+                    core.getDeaths().add(new Death(id, uuid, loc, respawnLoc, message, inv, unix));
                 }
             }
         } catch (IOException | ClassNotFoundException e) {
@@ -111,7 +123,6 @@ public class FileManager {
         }
     }
 
-
     public static ItemStack[] deserializeInventory(String data) throws IOException, ClassNotFoundException {
         ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64.getDecoder().decode(data));
         BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
@@ -125,5 +136,10 @@ public class FileManager {
 
         dataInput.close();
         return items;
+    }
+
+    public static void update(Death death) {
+        core.getDeaths().removeIf(d -> d.getId() == death.getId());
+        insert(death);
     }
 }

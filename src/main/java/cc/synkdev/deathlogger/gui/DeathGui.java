@@ -1,13 +1,15 @@
-package cc.synkdev.deathLogger.gui;
+package cc.synkdev.deathlogger.gui;
 
-import cc.synkdev.deathLogger.DeathLogger;
-import cc.synkdev.deathLogger.Util;
-import cc.synkdev.deathLogger.object.Death;
+import cc.synkdev.deathlogger.DeathLogger;
+import cc.synkdev.deathlogger.Util;
+import cc.synkdev.deathlogger.manager.ConfigManager;
+import cc.synkdev.deathlogger.manager.integration.SkinUtils;
+import cc.synkdev.deathlogger.object.Death;
+import cc.synkdev.kyori.adventure.text.Component;
 import cc.synkdev.nexusCore.bukkit.Lang;
 import cc.synkdev.triumph.builder.item.ItemBuilder;
 import cc.synkdev.triumph.builder.item.SkullBuilder;
 import cc.synkdev.triumph.guis.Gui;
-import cc.synkdev.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -29,18 +31,23 @@ public class DeathGui {
         boolean self = d.getPlayer().equals(player.getUniqueId());
         boolean tp = self ? player.hasPermission("deathlogger.teleport.self") : player.hasPermission("deathlogger.teleport.all");
         boolean coords = self ? player.hasPermission("deathlogger.coordinates.self") : player.hasPermission("deathlogger.coordinates.all");
+        boolean respawnTp = self ? player.hasPermission("deathlogger.respawn.teleport.self") : player.hasPermission("deathlogger.respawn.teleport.all");
+        boolean respawnCoords = self ? player.hasPermission("deathlogger.respawn.coordinates.self") : player.hasPermission("deathlogger.respawn.coordinates.all");
         boolean inv = self ? player.hasPermission("deathlogger.inventory.view.self") : player.hasPermission("deathlogger.inventory.view.all");
+        boolean last = self ? player.hasPermission("deathlogger.lastdeath.self") : player.hasPermission("deathlogger.lastdeath.all");
+        boolean hasLast = Util.getPlayersDeaths().get(d.getPlayer()) != null && Util.getPlayersDeaths().get(d.getPlayer()).size() > 1;
 
         gui.getFiller().fill(ItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE).name(Component.text(" ")).asGuiItem());
 
         OfflinePlayer oP = Bukkit.getOfflinePlayer(d.getPlayer());
         SkullBuilder builder;
-        if (core.getSkinsRestorerAPI() != null && oP.isOnline()) {
-            builder = ItemBuilder.skull().texture(core.skinUtils.getSkinValue(core.skinUtils.getPlayerSkin(oP.getPlayer())));
+        if (core.getSkinsRestorerAPI()!=null && ConfigManager.isUseSkinsRestorer()) {
+            Util.log("Getting skin for "+oP.getName()+" with UUID: "+oP.getUniqueId());
+            builder = ItemBuilder.skull().texture(core.skinUtils.getSkinValue(SkinUtils.getSkin(oP.getUniqueId(), oP.getName()).orElse(null)));
         } else {
             builder = ItemBuilder.skull().owner(oP);
         }
-        gui.setItem(1, 5, builder.owner(oP).name(Component.text(ChatColor.AQUA+oP.getName())).asGuiItem());
+        gui.setItem(1, 5, builder.name(Component.text(ChatColor.AQUA+oP.getName())).asGuiItem());
 
         gui.setItem(2, 4, ItemBuilder.from(Material.CHEST).name(Component.text(Lang.translate("deathGuiInv", core))).asGuiItem(event -> {
             if (inv) {
@@ -50,6 +57,7 @@ public class DeathGui {
             }
         }));
         gui.setItem(2, 2, ItemBuilder.from(Material.PAPER).name(Component.text(Lang.translate("deathMsg", core))).lore(Component.text(ChatColor.DARK_GRAY+d.getMsg())).asGuiItem());
+
         List<Component> lore = new ArrayList<>();
         if (!coords && !tp) lore.addAll(List.of(Component.text(""), Component.text(Util.translate("noPermMenu"))));
         else if (coords && !tp) lore.addAll(List.of(Component.text("  "+Lang.translate("deathLocLore1", core, d.getLoc().getWorld().getName())), Component.text("  "+Lang.translate("deathLocLore2", core, d.getLoc().getBlockX()+"", d.getLoc().getBlockY()+"", d.getLoc().getBlockZ()+""))));
@@ -62,7 +70,38 @@ public class DeathGui {
                 .lore(lore).asGuiItem(event -> {
                             if (tp) event.getWhoClicked().teleport(d.getLoc());
                 }));
+
+        if (d.getRespawnLoc() != null) {
+            List<Component> loreRespawn = new ArrayList<>();
+            if (!respawnCoords && !respawnTp) loreRespawn.addAll(List.of(Component.text(""), Component.text(Util.translate("noPermMenu"))));
+            else if (respawnCoords && !respawnTp) loreRespawn.addAll(List.of(Component.text("  "+Lang.translate("respawnLocLore1", core, d.getRespawnLoc().getWorld().getName())), Component.text("  "+Lang.translate("respawnLocLore2", core, d.getRespawnLoc().getBlockX()+"", d.getRespawnLoc().getBlockY()+"", d.getRespawnLoc().getBlockZ()+""))));
+            else if (!respawnCoords) loreRespawn.addAll(List.of(Component.text(""), Component.text(Lang.translate("respawnLocLore3", core))));
+            else loreRespawn.addAll(List.of(Component.text("  "+Lang.translate("respawnLocLore1", core, d.getRespawnLoc().getWorld().getName())), Component.text("  "+Lang.translate("respawnLocLore2", core, d.getRespawnLoc().getBlockX()+"", d.getRespawnLoc().getBlockY()+"", d.getRespawnLoc().getBlockZ()+"")),
+                        Component.empty(), Component.text(Lang.translate("respawnLocLore3", core))));
+
+            Material compass;
+            try {
+                compass = Material.valueOf("RECOVERY_COMPASS");
+            } catch (IllegalArgumentException e) {
+                compass = Material.COMPASS;
+            }
+            gui.setItem(2, 7, ItemBuilder.from(compass)
+                    .name(Component.text(Lang.translate("respawnLoc", core)))
+                    .lore(loreRespawn).asGuiItem(event -> {
+                        if (respawnTp) event.getWhoClicked().teleport(d.getRespawnLoc());
+                    }));
+        }
+
         gui.setItem(2, 8, ItemBuilder.from(Material.CLOCK).name(Component.text(Lang.translate("deathTime", core))).lore(Component.text("  "+ChatColor.GOLD+Util.formatUnixSeconds(d.getUnix()))).asGuiItem());
+
+        if (hasLast) {
+            if (last)
+                gui.setItem(2, 3, ItemBuilder.from(Material.CLOCK).name(Component.text(Util.translate("deathTimeSinceLast"))).lore(Component.text("  " + ChatColor.GOLD + Util.formatDuration(d.getUnix() - Util.getPlayersDeaths().get(d.getPlayer()).stream().toList().get(Util.getPlayersDeaths().get(d.getPlayer()).size() - 2).getUnix()))).asGuiItem());
+            else
+                gui.setItem(2, 3, ItemBuilder.from(Material.CLOCK).name(Component.text(Lang.translate("deathTimeSinceLast", core))).lore(Component.text(""), Component.text(Util.translate("noPermMenu"))).asGuiItem());
+        } else {
+            gui.setItem(2, 3, ItemBuilder.from(Material.CLOCK).name(Component.text(Lang.translate("deathTimeSinceLast", core))).lore(Component.text(""), Component.text(Util.translate("noLastDeath", Util.getName(d.getPlayer())))).asGuiItem());
+        }
 
 
 
