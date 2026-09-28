@@ -21,8 +21,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.io.File;
-
 @CommandAlias("deathlogger|dl|deathl|dlogger")
 public class MainCommand extends BaseCommand {
     private final DeathLogger core = DeathLogger.getInstance();
@@ -55,7 +53,7 @@ public class MainCommand extends BaseCommand {
     @CommandPermission("deathlogger.reload")
     public void onReload(CommandSender sender) {
         ConfigManager.init(core);
-        NexusUtils.initLang(core, core.langMap, ConfigManager.getLang());
+        NexusUtils.initLang(core, core.localLangMap, ConfigManager.getLang());
         FileManager.read();
         sender.sendMessage(ChatColor.GREEN + Lang.translate("reloaded", core));
     }
@@ -70,7 +68,7 @@ public class MainCommand extends BaseCommand {
         int id;
         try {
             id = Integer.parseInt(args[0]);
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException _) {
             Util.sendMessage(p, "invUsage");
             return;
         }

@@ -82,7 +82,7 @@ public class DeathGui {
             Material compass;
             try {
                 compass = Material.valueOf("RECOVERY_COMPASS");
-            } catch (IllegalArgumentException e) {
+            } catch (IllegalArgumentException _) {
                 compass = Material.COMPASS;
             }
             gui.setItem(2, 7, ItemBuilder.from(compass)

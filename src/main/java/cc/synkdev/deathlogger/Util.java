@@ -6,13 +6,16 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import java.security.CodeSigner;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Util {
+    private Util() {
+        /* This utility class should not be instantiated */
+    }
+
     private static final DeathLogger core = DeathLogger.getInstance();
     public static Map<UUID, List<Death>> getPlayersDeaths() {
         Map<UUID, List<Death>> map = new HashMap<>();

@@ -42,15 +42,15 @@ public class PlayersGui {
         for (int i = (page-1)*45; i < page*45; i++) {
             if (map.size() <= i) break;
             UUID uuid = new ArrayList<>(map.keySet()).get(i);
-            OfflinePlayer OP = Bukkit.getOfflinePlayer(uuid);
-            Util.debug("Name: "+OP.getName());
+            OfflinePlayer oP = Bukkit.getOfflinePlayer(uuid);
+            Util.debug("Name: "+ oP.getName());
             SkullBuilder builder;
             if (core.getSkinsRestorerAPI()!=null && ConfigManager.isUseSkinsRestorer()) {
-                builder = ItemBuilder.skull().texture(core.skinUtils.getSkinValue(SkinUtils.getSkin(OP.getUniqueId(), OP.getName()).orElse(null)));
+                builder = ItemBuilder.skull().texture(core.skinUtils.getSkinValue(SkinUtils.getSkin(oP.getUniqueId(), oP.getName()).orElse(null)));
             } else {
-                builder = ItemBuilder.skull().owner(OP);
+                builder = ItemBuilder.skull().owner(oP);
             }
-            gui.addItem(builder.name(Component.text(Lang.translate("playersDeath", core, OP.getName()))).asGuiItem(event -> new PlayerGui().gui(uuid, 1, false).open(event.getWhoClicked())));
+            gui.addItem(builder.name(Component.text(Lang.translate("playersDeath", core, oP.getName()))).asGuiItem(event -> new PlayerGui().gui(uuid, 1, false).open(event.getWhoClicked())));
 
         }
 

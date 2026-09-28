@@ -22,7 +22,6 @@ import net.skinsrestorer.api.SkinsRestorer;
 import net.skinsrestorer.api.SkinsRestorerProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -36,15 +35,15 @@ public final class DeathLogger extends JavaPlugin implements NexusPlugin {
     @Getter private static DeathLogger instance;
     @Getter private SkinsRestorer skinsRestorerAPI;
     @Getter private final String prefix = ChatColor.translateAlternateColorCodes('&', "&8[&6DeathLogger&8] » &r");
-    public List<Death> deaths = new ArrayList<>();
-    public Map<String, String> langMap = new HashMap<>();
+    public final List<Death> deaths = new ArrayList<>();
+    public final Map<String, String> localLangMap = new HashMap<>();
     private final File configFile = new File(getDataFolder(), "config.yml");
     public SkinUtils skinUtils;
 
     public static final ErrorTracker ERROR_TRACKER = ErrorTracker.contextAware();
     private BukkitContext context;
 
-
+    @Override
     public void onEnable() {
         instance = this;
 
@@ -52,7 +51,7 @@ public final class DeathLogger extends JavaPlugin implements NexusPlugin {
 
         FileManager.create();
         FileManager.read();
-        NexusUtils.initLang(this, langMap, ConfigManager.getLang());
+        NexusUtils.initLang(this, localLangMap, ConfigManager.getLang());
 
         BukkitCommandManager bcm = new BukkitCommandManager(this);
 
@@ -61,11 +60,11 @@ public final class DeathLogger extends JavaPlugin implements NexusPlugin {
         bcm.registerCommand(new DeathsCmd());
         Bukkit.getPluginManager().registerEvents(new DeathListener(), this);
         Metrics metrics = new Metrics(this, 22687);
-        metrics.addCustomChart(new SingleLineChart("death", () -> deaths.size()));
+        metrics.addCustomChart(new SingleLineChart("death", deaths::size));
 
         context = new BukkitContext.Factory(this, "f68678b9731013c353d9d16e4184cfbc")
                 .errorTrackerService(ERROR_TRACKER)
-                .metrics(factory -> factory.addMetric(Metric.number("deaths", () -> deaths.size()))
+                .metrics(factory -> factory.addMetric(Metric.number("deaths", deaths::size))
                         .create())
                 .create();
         context.ready();
@@ -76,7 +75,7 @@ public final class DeathLogger extends JavaPlugin implements NexusPlugin {
         }
     }
 
-
+    @Override
     public void onDisable() {
         context.shutdown();
     }
@@ -108,6 +107,6 @@ public final class DeathLogger extends JavaPlugin implements NexusPlugin {
 
     @Override
     public Map<String, String> langMap() {
-        return langMap;
+        return localLangMap;
     }
 }

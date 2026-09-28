@@ -1,4 +1,4 @@
-This very simple plugin allows you to log many informations about players when they die, such as their location, inventory, or death message.
+This very simple plugin allows you to log information about players when they die, such as their location, inventory, or death message.
 
 See the gallery for a few examples.
 

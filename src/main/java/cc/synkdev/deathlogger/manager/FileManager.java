@@ -3,29 +3,41 @@ package cc.synkdev.deathlogger.manager;
 import cc.synkdev.deathlogger.DeathLogger;
 import cc.synkdev.deathlogger.Util;
 import cc.synkdev.deathlogger.object.Death;
+import cc.synkdev.json.JSONArray;
+import cc.synkdev.json.JSONException;
+import cc.synkdev.json.JSONObject;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
-import cc.synkdev.json.JSONArray;
-import cc.synkdev.json.JSONException;
-import cc.synkdev.json.JSONObject;
-import org.jspecify.annotations.NonNull;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.FileSystemException;
 import java.nio.file.Files;
-import java.util.*;
+import java.util.Base64;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 public class FileManager {
+    private FileManager() {
+        /* This utility class should not be instantiated */
+    }
+
     private static final DeathLogger core = DeathLogger.getInstance();
     private static final File file = new File(core.getDataFolder(), "playerdata.json");
     public static void create() {
         if (!file.exists()) {
             try {
-                file.createNewFile();
+                if (!file.createNewFile()) {
+                    throw new FileSystemException("Failed to create playerdata.json");
+                }
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         }
     }
@@ -71,7 +83,7 @@ public class FileManager {
         try {
             Files.writeString(file.toPath(), exportMap().toString(2));
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -101,8 +113,10 @@ public class FileManager {
                 }
             }
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (JSONException ignored){}
+            throw new RuntimeException(e);
+        } catch (JSONException _) {
+            // Ignore, file is empty
+        }
     }
 
     private static String serializeInventory(ItemStack[] inventory) {
@@ -118,8 +132,7 @@ public class FileManager {
             dataOutput.close();
             return Base64.getEncoder().encodeToString(outputStream.toByteArray());
         } catch (IOException var8) {
-            var8.printStackTrace();
-            return null;
+            throw new RuntimeException(var8);
         }
     }
 

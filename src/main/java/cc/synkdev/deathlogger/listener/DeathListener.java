@@ -38,20 +38,18 @@ public class DeathListener implements Listener {
         }
         if (ConfigManager.isLastDeathTime()) {
             if (ConfigManager.isSelfOnly()) {
-                sendLastDeath(p, lastDeath, d.isSelf(p), p.hasPermission("deathlogger.lastdeath.self"), p.hasPermission("deathlogger.lastdeath.all"), p.spigot(), d, p);
+                sendLastDeath(p, lastDeath, d.isSelf(p), p);
             } else {
-                Bukkit.getOnlinePlayers().forEach(pl -> {
-                    sendLastDeath(p, lastDeath, d.isSelf(pl), pl.hasPermission("deathlogger.lastdeath.self"), pl.hasPermission("deathlogger.lastdeath.all"), pl.spigot(), d, pl);
-                });
+                Bukkit.getOnlinePlayers().forEach(pl -> sendLastDeath(p, lastDeath, d.isSelf(pl), pl));
             }
         }
     }
 
-    private void sendLastDeath(Player p, Death lastDeath, boolean self, boolean b, boolean b2, Player.Spigot spigot, Death d, Player pl) {
-        if (self ? b : b2) {
-            String timeSinceLastDeath = lastDeath == null ? Util.translate("noLastDeath", p.getName()) : Util.translate("lastDeath", p.getName(), Util.formatDuration(System.currentTimeMillis() - lastDeath.getUnix()));
+    private void sendLastDeath(Player p, Death lastDeath, boolean self, Player pl) {
+        if (self ? p.hasPermission("deathlogger.lastdeath.self") : p.hasPermission("deathlogger.lastdeath.all")) {
+            String timeSinceLastDeath = lastDeath == null ? Util.translate("noLastDeath", pl.getName()) : Util.translate("lastDeath", pl.getName(), Util.formatDuration(System.currentTimeMillis() - lastDeath.getUnix()));
             TextComponent comp = new TextComponent(core.prefix() + timeSinceLastDeath);
-            spigot.sendMessage(comp);
+            p.spigot().sendMessage(comp);
         }
     }
 

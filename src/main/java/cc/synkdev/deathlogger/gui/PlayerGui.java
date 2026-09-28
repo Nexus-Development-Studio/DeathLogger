@@ -21,17 +21,17 @@ public class PlayerGui {
     public Gui gui(UUID uuid, int page, boolean close) {
         List<Death> list = Util.getPlayersDeaths().get(uuid);
         if (list != null) list = list.reversed();
-        OfflinePlayer OP = Bukkit.getOfflinePlayer(uuid);
+        OfflinePlayer oP = Bukkit.getOfflinePlayer(uuid);
         Gui gui = Gui.gui()
                 .disableAllInteractions()
-                .title(Component.text(Lang.translate("playersDeath", core, OP.getName())))
+                .title(Component.text(Lang.translate("playersDeath", core, oP.getName())))
                 .rows(6)
                 .create();
 
         if (close) {
             gui.setItem(6, 5, ItemBuilder.from(Material.BARRIER).name(Component.text(Lang.translate("close", core))).asGuiItem(event -> event.getWhoClicked().closeInventory()));
         } else {
-            gui.setItem(6, 5, ItemBuilder.from(Material.BARRIER).name(Component.text(Lang.translate("back", core))).asGuiItem(event -> new PlayersGui().gui(1).open((Player) event.getWhoClicked())));
+            gui.setItem(6, 5, ItemBuilder.from(Material.BARRIER).name(Component.text(Lang.translate("back", core))).asGuiItem(event -> new PlayersGui().gui(1).open(event.getWhoClicked())));
         }
 
         gui.getFiller().fillBottom(ItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE).name(Component.text(" ")).asGuiItem());
@@ -41,7 +41,7 @@ public class PlayerGui {
         }
         int totalPages = (list.size() + 45 - 1) / 45;
         if (page < totalPages) {
-            gui.setItem(6, 6, ItemBuilder.from(Material.ARROW).name(Component.text(Lang.translate("nextPage", core))).asGuiItem(event -> gui(uuid, page+1, close).open((Player) event.getWhoClicked())));
+            gui.setItem(6, 6, ItemBuilder.from(Material.ARROW).name(Component.text(Lang.translate("nextPage", core))).asGuiItem(event -> gui(uuid, page+1, close).open(event.getWhoClicked())));
         }
         if (page > 1) {
             gui.setItem(6, 4, ItemBuilder.from(Material.ARROW).name(Component.text(Lang.translate("prevPage", core))).asGuiItem(event -> gui(uuid, page-1, close).open(event.getWhoClicked())));
@@ -50,7 +50,7 @@ public class PlayerGui {
         for (int i = (page-1)*45; i < page*45; i++) {
             if (list.size() <= i) break;
             Death d = list.get(i);
-            gui.addItem(ItemBuilder.from(Material.SKELETON_SKULL).name(Component.text(Lang.translate("playerSpecDeath", core, OP.getName(), d.getId()+""))).asGuiItem(event -> new DeathGui().gui(d, false, (Player) event.getWhoClicked()).open(event.getWhoClicked())));
+            gui.addItem(ItemBuilder.from(Material.SKELETON_SKULL).name(Component.text(Lang.translate("playerSpecDeath", core, oP.getName(), d.getId()+""))).asGuiItem(event -> new DeathGui().gui(d, false, (Player) event.getWhoClicked()).open(event.getWhoClicked())));
 
         }
 

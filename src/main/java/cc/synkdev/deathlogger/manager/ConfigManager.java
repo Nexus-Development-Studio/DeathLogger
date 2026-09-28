@@ -5,7 +5,12 @@ import cc.synkdev.nexusCore.bukkit.NexusUtils;
 import lombok.Getter;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import java.nio.file.FileSystemException;
+
 public class ConfigManager {
+    private ConfigManager() {
+    }
+
     @Getter private static YamlConfiguration config;
     @Getter private static String lang;
     @Getter private static boolean useSkinsRestorer;
@@ -15,7 +20,14 @@ public class ConfigManager {
     @Getter private static boolean selfOnly;
 
     public static void init(DeathLogger plugin) {
-        if (!plugin.getDataFolder().exists()) plugin.getDataFolder().mkdirs();
+        if (!plugin.getDataFolder().exists() && !plugin.getDataFolder().mkdirs()) {
+                try {
+                    throw new FileSystemException("Failed to create data folder");
+                } catch (FileSystemException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
         config = NexusUtils.updateConfig(plugin);
         loadConfig(plugin);
 
