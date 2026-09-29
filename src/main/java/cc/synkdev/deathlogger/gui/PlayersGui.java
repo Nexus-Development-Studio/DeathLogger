@@ -46,7 +46,12 @@ public class PlayersGui {
             Util.debug("Name: "+ oP.getName());
             SkullBuilder builder;
             if (core.getSkinsRestorerAPI()!=null && ConfigManager.isUseSkinsRestorer()) {
-                builder = ItemBuilder.skull().texture(core.skinUtils.getSkinValue(SkinUtils.getSkin(oP.getUniqueId(), oP.getName()).orElse(null)));
+                String texture = core.skinUtils.getSkinValue(SkinUtils.getSkin(oP.getUniqueId(), oP.getName()).orElse(null));
+                if (texture != null) {
+                    builder = ItemBuilder.skull().texture(texture);
+                } else {
+                    builder = ItemBuilder.skull().owner(oP);
+                }
             } else {
                 builder = ItemBuilder.skull().owner(oP);
             }

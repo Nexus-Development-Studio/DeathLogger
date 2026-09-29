@@ -87,7 +87,7 @@ public final class DeathLogger extends JavaPlugin implements NexusPlugin {
 
     @Override
     public String ver() {
-        return "3.4";
+        return "3.4.1";
     }
 
     @Override

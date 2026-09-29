@@ -46,10 +46,10 @@ public class DeathListener implements Listener {
     }
 
     private void sendLastDeath(Player p, Death lastDeath, boolean self, Player pl) {
-        if (self ? p.hasPermission("deathlogger.lastdeath.self") : p.hasPermission("deathlogger.lastdeath.all")) {
-            String timeSinceLastDeath = lastDeath == null ? Util.translate("noLastDeath", pl.getName()) : Util.translate("lastDeath", pl.getName(), Util.formatDuration(System.currentTimeMillis() - lastDeath.getUnix()));
+        if (self ? pl.hasPermission("deathlogger.lastdeath.self") : pl.hasPermission("deathlogger.lastdeath.all")) {
+            String timeSinceLastDeath = lastDeath == null ? Util.translate("noLastDeath", p.getName()) : Util.translate("lastDeath", p.getName(), Util.formatDuration(System.currentTimeMillis() - lastDeath.getUnix()));
             TextComponent comp = new TextComponent(core.prefix() + timeSinceLastDeath);
-            p.spigot().sendMessage(comp);
+            pl.spigot().sendMessage(comp);
         }
     }
 

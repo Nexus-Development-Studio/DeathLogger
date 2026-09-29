@@ -52,10 +52,16 @@ permissions:
     default: true
   deathlogger.respawn.all:
     description: View the location of a player's last respawn
-    default: true
+    default: op
   deathlogger.respawn.teleport.all:
     description: Teleport to any player's respawn location
     default: op
   deathlogger.respawn.teleport.self:
     description: Teleport to your own respawn locations
+    default: op
+  deathlogger.respawn.coordinates.all:
+    description: View the coordinates of any player's respawn location
+    default: op
+  deathlogger.respawn.coordinates.self:
+    description: View the coordinates of your own deaths' respawn locations
     default: op
