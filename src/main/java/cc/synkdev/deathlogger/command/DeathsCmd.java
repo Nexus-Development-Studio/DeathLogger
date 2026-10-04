@@ -8,7 +8,7 @@ import cc.synkdev.acf.annotation.Default;
 import cc.synkdev.deathlogger.DeathLogger;
 import cc.synkdev.deathlogger.gui.PlayerGui;
 import cc.synkdev.deathlogger.gui.PlayersGui;
-import cc.synkdev.nexusCore.bukkit.Lang;
+import cc.synkdev.nexuscore.bukkit.Lang;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;

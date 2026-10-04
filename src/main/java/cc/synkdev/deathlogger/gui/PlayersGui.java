@@ -5,7 +5,7 @@ import cc.synkdev.deathlogger.Util;
 import cc.synkdev.deathlogger.manager.ConfigManager;
 import cc.synkdev.deathlogger.manager.integration.SkinUtils;
 import cc.synkdev.deathlogger.object.Death;
-import cc.synkdev.nexusCore.bukkit.Lang;
+import cc.synkdev.nexuscore.bukkit.Lang;
 import cc.synkdev.triumph.builder.item.ItemBuilder;
 import cc.synkdev.triumph.builder.item.SkullBuilder;
 import cc.synkdev.triumph.guis.Gui;

@@ -7,6 +7,7 @@ import cc.synkdev.bstats.charts.SingleLineChart;
 import cc.synkdev.deathlogger.command.DeathsCmd;
 import cc.synkdev.deathlogger.command.MainCommand;
 import cc.synkdev.deathlogger.listener.DeathListener;
+import cc.synkdev.deathlogger.listener.TrackerListener;
 import cc.synkdev.deathlogger.manager.ConfigManager;
 import cc.synkdev.deathlogger.manager.FileManager;
 import cc.synkdev.deathlogger.manager.integration.SkinUtils;
@@ -14,9 +15,9 @@ import cc.synkdev.deathlogger.object.Death;
 import cc.synkdev.faststats.ErrorTracker;
 import cc.synkdev.faststats.bukkit.BukkitContext;
 import cc.synkdev.faststats.data.Metric;
-import cc.synkdev.nexusCore.bukkit.Lang;
-import cc.synkdev.nexusCore.bukkit.NexusUtils;
-import cc.synkdev.nexusCore.components.NexusPlugin;
+import cc.synkdev.nexuscore.bukkit.Lang;
+import cc.synkdev.nexuscore.bukkit.NexusUtils;
+import cc.synkdev.nexuscore.components.NexusPlugin;
 import lombok.Getter;
 import net.skinsrestorer.api.SkinsRestorer;
 import net.skinsrestorer.api.SkinsRestorerProvider;
@@ -58,6 +59,7 @@ public final class DeathLogger extends JavaPlugin implements NexusPlugin {
         bcm.getLocales().addMessage(bcm.getLocales().getDefaultLocale(), MessageKeys.PERMISSION_DENIED, Lang.translate("noPermission", this));
         bcm.registerCommand(new MainCommand());
         bcm.registerCommand(new DeathsCmd());
+        Bukkit.getPluginManager().registerEvents(new TrackerListener(), this);
         Bukkit.getPluginManager().registerEvents(new DeathListener(), this);
         Metrics metrics = new Metrics(this, 22687);
         metrics.addCustomChart(new SingleLineChart("death", deaths::size));
@@ -87,7 +89,7 @@ public final class DeathLogger extends JavaPlugin implements NexusPlugin {
 
     @Override
     public String ver() {
-        return "3.4.1";
+        return "3.5.0-DEV";
     }
 
     @Override

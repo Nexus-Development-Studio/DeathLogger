@@ -3,8 +3,10 @@ package cc.synkdev.deathlogger.listener;
 import cc.synkdev.deathlogger.DeathLogger;
 import cc.synkdev.deathlogger.Util;
 import cc.synkdev.deathlogger.manager.ConfigManager;
+import cc.synkdev.deathlogger.manager.ItemTrackerManager;
 import cc.synkdev.deathlogger.object.Death;
 import cc.synkdev.deathlogger.manager.FileManager;
+import cc.synkdev.deathlogger.object.DeathItem;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -21,10 +23,10 @@ public class DeathListener implements Listener {
     public void death(PlayerDeathEvent event) {
         Player p = event.getEntity();
         String message = event.getDeathMessage();
-        ItemStack[] inv = p.getInventory().getContents();
         int id = core.deaths.size();
+        DeathItem[] inv = ItemTrackerManager.ofInventory(p.getInventory().getContents(), id, event.getEntity().getLocation());
         Death lastDeath = Util.getLastDeath(p);
-        Death d = new Death(id, p.getUniqueId(), p.getLocation(), null, message, inv, System.currentTimeMillis());
+        Death d = new Death(id, p.getUniqueId(), p.getLocation(), null, message, inv, System.currentTimeMillis(), p.getFoodLevel(), p.getSaturation(), p.getTotalExperience());
         FileManager.insert(d);
         if (ConfigManager.isOverrideVanillaMsgs()) {
             event.setDeathMessage(null);

@@ -3,6 +3,7 @@ package cc.synkdev.deathlogger.manager;
 import cc.synkdev.deathlogger.DeathLogger;
 import cc.synkdev.deathlogger.Util;
 import cc.synkdev.deathlogger.object.Death;
+import cc.synkdev.deathlogger.object.DeathItem;
 import cc.synkdev.json.JSONArray;
 import cc.synkdev.json.JSONException;
 import cc.synkdev.json.JSONObject;
@@ -18,10 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystemException;
 import java.nio.file.Files;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class FileManager {
     private FileManager() {
@@ -58,7 +56,10 @@ public class FileManager {
 
                 deathObj.put("message", d.getMsg());
                 deathObj.put("timestamp", d.getUnix());
-                deathObj.put("inventory", serializeInventory(d.getInv()));
+                deathObj.put("drops", exportInventory(d.getInv()));
+                if (d.getHunger() != -1) deathObj.put("hunger", d.getHunger());
+                if (d.getSaturation() != -1.0f) deathObj.put("saturation", d.getSaturation());
+                if (d.getXp() != -1) deathObj.put("xp", d.getXp());
                 deaths.put(deathObj);
             }
             playerObj.put("deaths", deaths);
@@ -68,7 +69,15 @@ public class FileManager {
         return arr;
     }
 
-    private static JSONObject getLocObj(Location loc) {
+    private static JSONArray exportInventory(DeathItem[] inv) {
+        JSONArray arr = new JSONArray();
+        for (DeathItem item : inv) {
+            arr.put(item.export());
+        }
+        return arr;
+    }
+
+    public static JSONObject getLocObj(Location loc) {
         JSONObject locObj = new JSONObject();
         locObj.put("world", loc.getWorld().getName());
         locObj.put("x", loc.getBlockX());
@@ -103,13 +112,27 @@ public class FileManager {
                     Location loc = new Location(Bukkit.getWorld(locObj.getString("world")), locObj.getInt("x"), locObj.getInt("y"), locObj.getInt("z"));
                     Location respawnLoc = null;
                     if (death.has("respawnLocation")) {
-                        JSONObject respawnLocObj =  death.getJSONObject("respawnLocation");
-                        respawnLoc =  new Location(Bukkit.getWorld(respawnLocObj.getString("world")), respawnLocObj.getInt("x"), respawnLocObj.getInt("y"), respawnLocObj.getInt("z"));
+                        JSONObject respawnLocObj = death.getJSONObject("respawnLocation");
+                        respawnLoc = getLocation(respawnLocObj);
                     }
                     String message = death.getString("message");
                     long unix = death.getLong("timestamp");
-                    ItemStack[] inv = deserializeInventory(death.getString("inventory"));
-                    core.getDeaths().add(new Death(id, uuid, loc, respawnLoc, message, inv, unix));
+                    DeathItem[] inv = null;
+                    if (death.has("inventory")) inv = ItemTrackerManager.convert(deserializeInventory(death.getString("inventory")));
+                    else {
+                        if (death.has("drops")) {
+                            List<DeathItem> deathInvList = new ArrayList<>();
+                            for (Object item : death.getJSONArray("drops")) {
+                                JSONObject itemObj = (JSONObject) item;
+                                deathInvList.add(new DeathItem(itemObj));
+                            }
+                            inv = deathInvList.toArray(new DeathItem[0]);
+                        }
+                    }
+                    int hunger = death.has("hunger") ? death.getInt("hunger") : -1;
+                    float saturation = death.has("saturation") ? death.getFloat("saturation") : -1.0f;
+                    int xp = death.has("xp") ? death.getInt("xp") : -1;
+                    core.getDeaths().add(new Death(id, uuid, loc, respawnLoc, message, inv, unix, hunger, saturation, xp));
                 }
             }
         } catch (IOException | ClassNotFoundException e) {
@@ -117,6 +140,10 @@ public class FileManager {
         } catch (JSONException _) {
             // Ignore, file is empty
         }
+    }
+
+    public static Location getLocation(JSONObject locObj) {
+        return new Location(Bukkit.getWorld(locObj.getString("world")), locObj.getInt("x"), locObj.getInt("y"), locObj.getInt("z"));
     }
 
     private static String serializeInventory(ItemStack[] inventory) {
@@ -134,6 +161,13 @@ public class FileManager {
         } catch (IOException var8) {
             throw new RuntimeException(var8);
         }
+    }
+    private static JSONArray serializeInventoryArray(ItemStack[] inventory) {
+        JSONArray array = new JSONArray();
+        for (ItemStack item : inventory) {
+            array.put(Util.serializeItemstack(item));
+        }
+        return array;
     }
 
     public static ItemStack[] deserializeInventory(String data) throws IOException, ClassNotFoundException {

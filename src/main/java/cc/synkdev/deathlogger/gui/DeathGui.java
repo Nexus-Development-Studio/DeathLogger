@@ -6,7 +6,7 @@ import cc.synkdev.deathlogger.manager.ConfigManager;
 import cc.synkdev.deathlogger.manager.integration.SkinUtils;
 import cc.synkdev.deathlogger.object.Death;
 import cc.synkdev.kyori.adventure.text.Component;
-import cc.synkdev.nexusCore.bukkit.Lang;
+import cc.synkdev.nexuscore.bukkit.Lang;
 import cc.synkdev.triumph.builder.item.ItemBuilder;
 import cc.synkdev.triumph.builder.item.SkullBuilder;
 import cc.synkdev.triumph.guis.Gui;
@@ -24,7 +24,7 @@ public class DeathGui {
     public Gui gui(Death d, boolean close, Player player) {
         Gui gui = Gui.gui()
                 .disableAllInteractions()
-                .rows(3)
+                .rows(4)
                 .title(Component.text(Lang.translate("deathGuiTitle", core, d.getId()+"")))
                 .create();
 
@@ -36,13 +36,17 @@ public class DeathGui {
         boolean inv = self ? player.hasPermission("deathlogger.inventory.view.self") : player.hasPermission("deathlogger.inventory.view.all");
         boolean last = self ? player.hasPermission("deathlogger.lastdeath.self") : player.hasPermission("deathlogger.lastdeath.all");
         boolean hasLast = Util.getPlayersDeaths().get(d.getPlayer()) != null && Util.getPlayersDeaths().get(d.getPlayer()).size() > 1;
+        boolean hunger = self ? player.hasPermission("deathlogger.hunger.self") : player.hasPermission("deathlogger.hunger.all");
+        boolean hasHunger = d.getHunger() != -1;
+        boolean xp = self ? player.hasPermission("deathlogger.exp.self") : player.hasPermission("deathlogger.exp.all");
+        boolean hasXp = d.getXp() != -1;
+        boolean hasRefundPerm = player.hasPermission("deathlogger.refund");
 
         gui.getFiller().fill(ItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE).name(Component.text(" ")).asGuiItem());
 
         OfflinePlayer oP = Bukkit.getOfflinePlayer(d.getPlayer());
         SkullBuilder builder;
         if (core.getSkinsRestorerAPI()!=null && ConfigManager.isUseSkinsRestorer()) {
-            Util.log("Getting skin for "+oP.getName()+" with UUID: "+oP.getUniqueId());
             builder = ItemBuilder.skull().texture(core.skinUtils.getSkinValue(SkinUtils.getSkin(oP.getUniqueId(), oP.getName()).orElse(null)));
         } else {
             builder = ItemBuilder.skull().owner(oP);
@@ -103,14 +107,38 @@ public class DeathGui {
             gui.setItem(2, 3, ItemBuilder.from(Material.CLOCK).name(Component.text(Lang.translate("deathTimeSinceLast", core))).lore(Component.text(""), Component.text(Util.translate("noLastDeath", Util.getName(d.getPlayer())))).asGuiItem());
         }
 
+        if (hasHunger) {
+            if (hunger)
+                gui.setItem(3, 4, ItemBuilder.from(Material.COOKED_BEEF).name(Component.text(Util.translate("deathHunger"))).lore(Component.text(""), Component.text("  " + Util.translate("deathHungerLore1", d.getHunger()+"")), Component.text("  "+Util.translate("deathHungerLore2", d.getSaturation()+""))).asGuiItem());
+            else
+                gui.setItem(3, 4, ItemBuilder.from(Material.COOKED_BEEF).name(Component.text(Lang.translate("deathHunger", core))).lore(Component.text(""), Component.text(Util.translate("noPermMenu"))).asGuiItem());
+        }
+
+        if (hasXp) {
+            if (xp)
+                gui.setItem(3, 6, ItemBuilder.from(Material.EXPERIENCE_BOTTLE).name(Component.text(Util.translate("deathXP"))).lore(Component.text(""), Component.text("  " + Util.translate("deathXPLore", d.getXp()+""))).asGuiItem());
+            else
+                gui.setItem(3, 6, ItemBuilder.from(Material.EXPERIENCE_BOTTLE).name(Component.text(Util.translate("deathXP"))).lore(Component.text(""), Component.text(Util.translate("noPermMenu"))).asGuiItem());
+        }
+
 
 
         if (close) {
-            gui.setItem(3, 5, ItemBuilder.from(Material.BARRIER).name(Component.text(Lang.translate("close", core))).asGuiItem(event -> event.getWhoClicked().closeInventory()));
+            gui.setItem(4, hasRefundPerm ? 6 : 5, ItemBuilder.from(Material.BARRIER)
+                    .name(Component.text(Lang.translate("close", core))).asGuiItem(event -> event.getWhoClicked().closeInventory()));
         } else {
-            gui.setItem(3, 5, ItemBuilder.from(Material.BARRIER).name(Component.text(Lang.translate("back", core))).asGuiItem(event -> new PlayerGui().gui(d.getPlayer(), 1, false).open(event.getWhoClicked())));
+            gui.setItem(4, hasRefundPerm ? 6 : 5, ItemBuilder.from(Material.BARRIER)
+                    .name(Component.text(Lang.translate("back", core))).asGuiItem(event -> new PlayerGui().gui(d.getPlayer(), 1, false).open(event.getWhoClicked())));
         }
 
+
+
+        if (hasRefundPerm) {
+            gui.setItem(4, 4, ItemBuilder.from(Material.BUCKET)
+                    .name(Component.text(Util.translate("deathRefund")))
+                    .lore(Component.empty(), Component.text(Util.translate("clickRefund", Util.getName(d.getPlayer()))))
+                    .asGuiItem(event -> new RefundGui().gui(d, (Player) event.getWhoClicked()).open(event.getWhoClicked())));
+        }
 
         return gui;
     }

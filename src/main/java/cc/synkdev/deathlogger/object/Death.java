@@ -16,10 +16,21 @@ public class Death {
     private Location loc;
     private Location respawnLoc;
     private String msg;
-    private ItemStack[] inv;
+    private DeathItem[] inv;
     private long unix;
+    private int hunger;
+    private float saturation;
+    private int xp;
 
     public boolean isSelf(OfflinePlayer player) {
         return this.player.equals(player.getUniqueId());
+    }
+
+    public ItemStack[] getInvItems() {
+        ItemStack[] items = new ItemStack[inv.length];
+        for (int i = 0; i < inv.length; i++) {
+            items[i] = inv[i].getItem();
+        }
+        return items;
     }
 }

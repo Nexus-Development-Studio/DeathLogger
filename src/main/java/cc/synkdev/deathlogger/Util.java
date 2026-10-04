@@ -1,11 +1,22 @@
 package cc.synkdev.deathlogger;
 
 import cc.synkdev.deathlogger.object.Death;
-import cc.synkdev.nexusCore.bukkit.Lang;
+import cc.synkdev.deathlogger.object.RefundOption;
+import cc.synkdev.deathlogger.object.options.DeathHunger;
+import cc.synkdev.deathlogger.object.options.DeathInv;
+import cc.synkdev.deathlogger.object.options.DeathLocation;
+import cc.synkdev.deathlogger.object.options.DeathXp;
+import cc.synkdev.nexuscore.bukkit.Lang;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.io.BukkitObjectInputStream;
+import org.bukkit.util.io.BukkitObjectOutputStream;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -96,5 +107,37 @@ public class Util {
 
     public static String getName(UUID player) {
         return Bukkit.getOfflinePlayer(player).getName();
+    }
+
+    public static RefundOption getOption(String name) {
+        List<RefundOption> options = List.of(new DeathInv(), new DeathXp(), new DeathHunger(), new DeathLocation());
+        for (RefundOption option : options) {
+            if (option.getName().equals(name)) {
+                return option;
+            }
+        }
+        return null;
+    }
+    public static String serializeItemstack(ItemStack item) {
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            BukkitObjectOutputStream bukkitOut = new BukkitObjectOutputStream(out);
+            bukkitOut.writeObject(item);
+            bukkitOut.close();
+            return Base64.getEncoder().encodeToString(out.toByteArray());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static ItemStack deserializeItemstack(String s) {
+        try {
+            ByteArrayInputStream in = new ByteArrayInputStream(Base64.getDecoder().decode(s));
+            BukkitObjectInputStream bukkitIn = new BukkitObjectInputStream(in);
+            ItemStack ret = (ItemStack) bukkitIn.readObject();
+            bukkitIn.close();
+            return ret;
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

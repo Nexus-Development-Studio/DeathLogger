@@ -1,8 +1,9 @@
 package cc.synkdev.deathlogger.gui;
 
 import cc.synkdev.deathlogger.DeathLogger;
+import cc.synkdev.deathlogger.manager.ItemTrackerManager;
 import cc.synkdev.deathlogger.object.Death;
-import cc.synkdev.nexusCore.bukkit.Lang;
+import cc.synkdev.nexuscore.bukkit.Lang;
 import cc.synkdev.triumph.builder.item.ItemBuilder;
 import cc.synkdev.triumph.guis.Gui;
 import cc.synkdev.kyori.adventure.text.Component;
@@ -27,7 +28,7 @@ public class DeathInventoryGui {
         int index = 0;
         boolean take = p.hasPermission("deathlogger.inventory.take");
 
-        for (ItemStack item : d.getInv()) {
+        for (ItemStack item : d.getInvItems()) {
             if (item != null) {
                 gui.setItem(index, ItemBuilder.from(item).asGuiItem(event -> {
                     if (take) event.getWhoClicked().getInventory().addItem(item);
@@ -42,17 +43,18 @@ public class DeathInventoryGui {
                         .lore(Component.text(Lang.translate("giveWarn", core, p.getName())))
                 .asGuiItem(event -> {
                     if (event.getWhoClicked().hasPermission("deathlogger.inventory.take")) {
-                        event.getWhoClicked().getInventory().setContents(d.getInv());
+                        event.getWhoClicked().getInventory().setContents(d.getInvItems());
                     } else {
                         event.getWhoClicked().sendMessage(Lang.translate("noPermission", core));
                     }
                 }));
         gui.setItem(6, 7, ItemBuilder.from(Material.CHEST).name(Component.text(Lang.translate("giveInv", core)))
                 .lore(Component.text(Lang.translate("giveWarn", core, Bukkit.getOfflinePlayer(d.getPlayer()).getName()))).asGuiItem(event -> {
-                    if (event.getWhoClicked().hasPermission("deathlogger.inventory.take")) {
+                    if (event.getWhoClicked().hasPermission("deathlogger.inventory.give")) {
                         OfflinePlayer oP = Bukkit.getOfflinePlayer(d.getPlayer());
                         if (oP.isOnline()) {
-                            oP.getPlayer().getInventory().setContents(d.getInv());
+                            ItemTrackerManager.clear(d.getInv());
+                            oP.getPlayer().getInventory().setContents(d.getInvItems());
                         } else {
                             event.getWhoClicked().sendMessage(core.prefix() + Lang.translate("offline", core));
                         }

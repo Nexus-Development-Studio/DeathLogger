@@ -1,7 +1,7 @@
 name: DeathLogger
 version: '${project.version}'
 main: cc.synkdev.deathlogger.DeathLogger
-api-version: '1.13'
+api-version: '1.18'
 authors: [ Synk ]
 depend:
   - NexusCore
@@ -38,6 +38,9 @@ permissions:
   deathlogger.player:
     description: View the player (specific player's deaths) menu
     default: true
+  deathlogger.refund:
+    description: Refund a death to a player (with options)
+    default: op
   deathlogger.reload:
     description: Reload the plugin
     default: op
@@ -47,11 +50,23 @@ permissions:
   deathlogger.lastdeath.all:
     description: View the time since a player's last death
     default: true
+  deathlogger.hunger.self:
+    description: View the hunger status from your own deaths
+    default: true
+  deathlogger.hunger.all:
+    description: View the hunger status from any player's deaths
+    default: true
+  deathlogger.exp.self:
+    description: View the XP level from your own deaths
+    default: true
+  deathlogger.exp.all:
+    description: View the XP level from any player's deaths
+    default: true
   deathlogger.respawn.self:
-    description: View the location of your last respawn
+    description: View the respawn location of your own deaths
     default: true
   deathlogger.respawn.all:
-    description: View the location of a player's last respawn
+    description: View the respawn location of any player's deaths
     default: op
   deathlogger.respawn.teleport.all:
     description: Teleport to any player's respawn location

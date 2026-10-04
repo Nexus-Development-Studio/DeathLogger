@@ -1,7 +1,7 @@
 package cc.synkdev.deathlogger.manager;
 
 import cc.synkdev.deathlogger.DeathLogger;
-import cc.synkdev.nexusCore.bukkit.NexusUtils;
+import cc.synkdev.nexuscore.bukkit.NexusUtils;
 import lombok.Getter;
 import org.bukkit.configuration.file.YamlConfiguration;
 
