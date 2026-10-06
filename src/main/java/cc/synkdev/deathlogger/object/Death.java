@@ -1,5 +1,6 @@
 package cc.synkdev.deathlogger.object;
 
+import cc.synkdev.deathlogger.Util;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,5 +33,9 @@ public class Death {
             items[i] = inv[i].getItem();
         }
         return items;
+    }
+
+    public String getPlayerName() {
+        return Util.getName(player);
     }
 }

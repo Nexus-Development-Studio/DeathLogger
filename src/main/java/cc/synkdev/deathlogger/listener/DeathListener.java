@@ -4,6 +4,7 @@ import cc.synkdev.deathlogger.DeathLogger;
 import cc.synkdev.deathlogger.Util;
 import cc.synkdev.deathlogger.manager.ConfigManager;
 import cc.synkdev.deathlogger.manager.ItemTrackerManager;
+import cc.synkdev.deathlogger.manager.WebhookManager;
 import cc.synkdev.deathlogger.object.Death;
 import cc.synkdev.deathlogger.manager.FileManager;
 import cc.synkdev.deathlogger.object.DeathItem;
@@ -45,6 +46,7 @@ public class DeathListener implements Listener {
                 Bukkit.getOnlinePlayers().forEach(pl -> sendLastDeath(p, lastDeath, d.isSelf(pl), pl));
             }
         }
+        WebhookManager.sendDeathWebhook(d);
     }
 
     private void sendLastDeath(Player p, Death lastDeath, boolean self, Player pl) {

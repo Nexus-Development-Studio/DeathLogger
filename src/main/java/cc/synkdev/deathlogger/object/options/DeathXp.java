@@ -18,7 +18,7 @@ public class DeathXp extends RefundOption {
 
     @Override
     public Material getIcon() {
-        return Material.CHEST;
+        return Material.EXPERIENCE_BOTTLE;
     }
 
     @Override

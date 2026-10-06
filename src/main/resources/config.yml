@@ -6,3 +6,13 @@ announce-deaths:
   self-only: false #If enabled, players will only see their own deaths in the GUI.
   time-since-last-death: true #If enabled, the plugin will display the time since the player last died in the death message.
   overwrite-vanilla-death-messages: false #If enabled, the plugin will overwrite the vanilla death messages with its own.
+webhook:
+  enabled: false #If enabled, the plugin will send death information to a Discord webhook.
+  url: "" #The URL of the webhook to send death information to.
+  #Note: The Webhook will display a player head. To use the one from SkinsRestorer, you need PlaceholderAPI.
+  values:
+    death-location: false
+    respawn-location: false
+    time-since-last-death: true
+    xp: false
+    hunger: false

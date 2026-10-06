@@ -1,8 +1,12 @@
 package cc.synkdev.deathlogger.object;
 
+import cc.synkdev.deathlogger.manager.PlayerRefundManager;
+
+import java.util.function.Consumer;
+
 public enum TrackerLocation {
     // Holders
-    PLAYER,
+    PLAYER(deathItem -> PlayerRefundManager.attemptRefund(deathItem.getPlayerUUID(), deathItem.getItem())),/*
     MOB,
     HORSE,
 
@@ -31,9 +35,16 @@ public enum TrackerLocation {
     LECTERN,
     DECORATED_POT,
     CHISELED_BOOKSHELF,
-    CAMPFIRE,
+    CAMPFIRE,*/
 
-    DROP,
+    DROP(deathItem -> {
+        //TODO This
+    });
 
-    DESTROYED
+    //DESTROYED;
+    public final Consumer<DeathItem> refund;
+
+    TrackerLocation(Consumer<DeathItem> refund) {
+        this.refund = refund;
+    }
 }

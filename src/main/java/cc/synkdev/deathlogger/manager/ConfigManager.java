@@ -18,6 +18,12 @@ public class ConfigManager {
     @Getter private static boolean overrideVanillaMsgs;
     @Getter private static boolean lastDeathTime;
     @Getter private static boolean selfOnly;
+    @Getter private static String webhookUrl;
+    @Getter private static boolean webhookDeathLocation;
+    @Getter private static boolean webhookRespawnLocation;
+    @Getter private static boolean webhookTimeSinceLastDeath;
+    @Getter private static boolean webhookXp;
+    @Getter private static boolean webhookHunger;
 
     public static void init(DeathLogger plugin) {
         if (!plugin.getDataFolder().exists() && !plugin.getDataFolder().mkdirs()) {
@@ -41,5 +47,11 @@ public class ConfigManager {
         overrideVanillaMsgs = getConfig().getBoolean("announce-deaths.override-vanilla-death-messages");
         lastDeathTime = getConfig().getBoolean("announce-deaths.time-since-last-death");
         selfOnly = getConfig().getBoolean("announce-deaths.self-only");
+        webhookUrl = getConfig().getBoolean("webhook.enabled") ? getConfig().getString("webhook.url") : null;
+        webhookDeathLocation = getConfig().getBoolean("webhook.values.death-location");
+        webhookRespawnLocation = getConfig().getBoolean("webhook.values.respawn-location");
+        webhookTimeSinceLastDeath = getConfig().getBoolean("webhook.values.time-since-last-death");
+        webhookXp = getConfig().getBoolean("webhook.values.xp");
+        webhookHunger = getConfig().getBoolean("webhook.values.hunger");
     }
 }

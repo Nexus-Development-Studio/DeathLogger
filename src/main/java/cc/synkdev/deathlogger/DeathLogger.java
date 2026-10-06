@@ -7,6 +7,7 @@ import cc.synkdev.bstats.charts.SingleLineChart;
 import cc.synkdev.deathlogger.command.DeathsCmd;
 import cc.synkdev.deathlogger.command.MainCommand;
 import cc.synkdev.deathlogger.listener.DeathListener;
+import cc.synkdev.deathlogger.listener.PlayerRefundListener;
 import cc.synkdev.deathlogger.listener.TrackerListener;
 import cc.synkdev.deathlogger.manager.ConfigManager;
 import cc.synkdev.deathlogger.manager.FileManager;
@@ -59,7 +60,8 @@ public final class DeathLogger extends JavaPlugin implements NexusPlugin {
         bcm.getLocales().addMessage(bcm.getLocales().getDefaultLocale(), MessageKeys.PERMISSION_DENIED, Lang.translate("noPermission", this));
         bcm.registerCommand(new MainCommand());
         bcm.registerCommand(new DeathsCmd());
-        Bukkit.getPluginManager().registerEvents(new TrackerListener(), this);
+        //Bukkit.getPluginManager().registerEvents(new TrackerListener(), this);
+        //Bukkit.getPluginManager().registerEvents(new PlayerRefundListener(), this);
         Bukkit.getPluginManager().registerEvents(new DeathListener(), this);
         Metrics metrics = new Metrics(this, 22687);
         metrics.addCustomChart(new SingleLineChart("death", deaths::size));
@@ -89,7 +91,7 @@ public final class DeathLogger extends JavaPlugin implements NexusPlugin {
 
     @Override
     public String ver() {
-        return "3.5.0-DEV";
+        return "3.5.0";
     }
 
     @Override

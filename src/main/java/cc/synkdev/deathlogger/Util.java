@@ -9,6 +9,7 @@ import cc.synkdev.deathlogger.object.options.DeathXp;
 import cc.synkdev.nexuscore.bukkit.Lang;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.io.BukkitObjectInputStream;
@@ -139,5 +140,9 @@ public class Util {
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static String getLocString(Location loc) {
+        return loc.getWorld().getName() + ": " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ();
     }
 }
