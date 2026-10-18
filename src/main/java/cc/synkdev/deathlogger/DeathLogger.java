@@ -73,8 +73,13 @@ public final class DeathLogger extends JavaPlugin implements NexusPlugin {
         context.ready();
 
         if (Bukkit.getPluginManager().isPluginEnabled("SkinsRestorer")) {
-            this.skinsRestorerAPI = SkinsRestorerProvider.get();
-            this.skinUtils = new SkinUtils();
+            try {
+                this.skinsRestorerAPI = SkinsRestorerProvider.get();
+                this.skinUtils = new SkinUtils();
+            } catch (IllegalStateException _) {
+                this.skinsRestorerAPI = null;
+                this.skinUtils = null;
+            }
         }
     }
 
@@ -90,7 +95,7 @@ public final class DeathLogger extends JavaPlugin implements NexusPlugin {
 
     @Override
     public String ver() {
-        return "3.6.1";
+        return "3.6.2";
     }
 
     @Override
