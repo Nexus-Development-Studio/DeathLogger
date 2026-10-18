@@ -31,7 +31,7 @@ public class WebhookManager {
 
         DiscordWebhook wh = new DiscordWebhook(ConfigManager.getWebhookUrl());
         wh.setUsername("DeathLogger");
-        wh.setAvatarUrl("https://cdn.modrinth.com/data/cYG1qwqe/d79d05265d12f7a38f9feaaead09aae14ee14127.png");
+        wh.setAvatarUrl("https://synkdev.cc/img/deathlogger.png");
 
         String formatted = DateTimeFormatter.ofPattern("yyyy/MM/dd - HH:mm:ss")
                 .withZone(ZoneId.systemDefault())
