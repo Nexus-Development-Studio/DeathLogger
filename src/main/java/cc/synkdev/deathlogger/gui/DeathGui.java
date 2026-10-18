@@ -41,6 +41,10 @@ public class DeathGui {
         boolean xp = self ? player.hasPermission("deathlogger.exp.self") : player.hasPermission("deathlogger.exp.all");
         boolean hasXp = d.getXp() != -1;
         boolean hasRefundPerm = player.hasPermission("deathlogger.refund");
+        boolean tps = self ? player.hasPermission("deathlogger.tps.self") : player.hasPermission("deathlogger.tps.all");
+        boolean ping = self ? player.hasPermission("deathlogger.ping.self") : player.hasPermission("deathlogger.ping.all");
+        boolean hasTps = d.getTps() != 0.0;
+        boolean hasPing = d.getPing() != -1;
 
         gui.getFiller().fill(ItemBuilder.from(Material.GRAY_STAINED_GLASS_PANE).name(Component.text(" ")).asGuiItem());
 
@@ -119,6 +123,14 @@ public class DeathGui {
                 gui.setItem(3, 6, ItemBuilder.from(Material.EXPERIENCE_BOTTLE).name(Component.text(Util.translate("deathXP"))).lore(Component.text(""), Component.text("  " + Util.translate("deathXPLore", d.getXp()+""))).asGuiItem());
             else
                 gui.setItem(3, 6, ItemBuilder.from(Material.EXPERIENCE_BOTTLE).name(Component.text(Util.translate("deathXP"))).lore(Component.text(""), Component.text(Util.translate("noPermMenu"))).asGuiItem());
+        }
+
+        if (hasPing || hasTps) {
+            gui.setItem(2, 5, ItemBuilder.from(Material.REDSTONE)
+                    .name(Component.text(Util.translate("performance")))
+                    .lore(Component.empty(),
+                            Component.text("  " + Util.translate("tps", tps ? d.getTps() + "" : Util.translate("noPermMenu"))),
+                            Component.text("  " + Util.translate("ping", ping ? d.getPing() + " ms" : Util.translate("noPermMenu")))).asGuiItem());
         }
 
 

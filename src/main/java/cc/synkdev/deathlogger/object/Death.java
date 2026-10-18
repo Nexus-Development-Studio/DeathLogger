@@ -22,6 +22,9 @@ public class Death {
     private int hunger;
     private float saturation;
     private int xp;
+    private int ping;
+    private double tps;
+
 
     public boolean isSelf(OfflinePlayer player) {
         return this.player.equals(player.getUniqueId());

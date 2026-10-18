@@ -11,13 +11,20 @@ import java.io.IOException;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.regex.Pattern;
 
 public class WebhookManager {
     private WebhookManager() {
         /* This utility class should not be instantiated */
     }
 
-    private static final boolean hasPAPI = Bukkit.getPluginManager().isPluginEnabled("SkinsRestorer") && Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI");
+    private static final boolean HAS_PAPI = Bukkit.getPluginManager().isPluginEnabled("SkinsRestorer") && Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI");
+
+
+    public static String stripSectionCodes(String input) {
+        Pattern sectionCode = Pattern.compile("§.?", Pattern.DOTALL);
+        return input == null ? null : sectionCode.matcher(input).replaceAll("");
+    }
 
     public static void sendDeathWebhook(Death death) {
         if (ConfigManager.getWebhookUrl() == null || ConfigManager.getWebhookUrl().isEmpty()) return;
@@ -30,10 +37,11 @@ public class WebhookManager {
                 .withZone(ZoneId.systemDefault())
                 .format(Instant.ofEpochMilli(death.getUnix()));
 
+
         DiscordWebhook.EmbedObject embed = new DiscordWebhook.EmbedObject()
                 .setTitle(Util.translate("webhookTitle", death.getPlayerName()))
-                .setThumbnail(hasPAPI ? PlaceholderAPI.setPlaceholders(Bukkit.getOfflinePlayer(death.getPlayer()), "https://mc-heads.net/head/%skinsrestorer_texture_id_or_steve%.png") : "https://mc-heads.net/head/"+death.getPlayerName())
-                .setDescription(death.getMsg())
+                .setThumbnail(HAS_PAPI ? PlaceholderAPI.setPlaceholders(Bukkit.getOfflinePlayer(death.getPlayer()), "https://mc-heads.net/head/%skinsrestorer_texture_id_or_steve%.png") : "https://mc-heads.net/head/" + death.getPlayerName())
+                .setDescription(stripSectionCodes(death.getMsg()))
                 .setColor(Color.RED);
         embed.addField(Util.translate("deathTime").substring(2), formatted, true);
         if (ConfigManager.isWebhookDeathLocation()) {

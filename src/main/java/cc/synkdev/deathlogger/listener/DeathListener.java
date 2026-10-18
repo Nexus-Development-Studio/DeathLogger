@@ -3,10 +3,10 @@ package cc.synkdev.deathlogger.listener;
 import cc.synkdev.deathlogger.DeathLogger;
 import cc.synkdev.deathlogger.Util;
 import cc.synkdev.deathlogger.manager.ConfigManager;
+import cc.synkdev.deathlogger.manager.FileManager;
 import cc.synkdev.deathlogger.manager.ItemTrackerManager;
 import cc.synkdev.deathlogger.manager.WebhookManager;
 import cc.synkdev.deathlogger.object.Death;
-import cc.synkdev.deathlogger.manager.FileManager;
 import cc.synkdev.deathlogger.object.DeathItem;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -16,7 +16,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.inventory.ItemStack;
 
 public class DeathListener implements Listener {
     private final DeathLogger core = DeathLogger.getInstance();
@@ -27,7 +26,13 @@ public class DeathListener implements Listener {
         int id = core.deaths.size();
         DeathItem[] inv = ItemTrackerManager.ofInventory(p.getInventory().getContents(), id, event.getEntity().getLocation());
         Death lastDeath = Util.getLastDeath(p);
-        Death d = new Death(id, p.getUniqueId(), p.getLocation(), null, message, inv, System.currentTimeMillis(), p.getFoodLevel(), p.getSaturation(), p.getTotalExperience());
+        double tps = 0;
+        try {
+            tps = ((double) Math.round(Bukkit.getServer().getTPS()[0] * 10)) / 10;
+        } catch (Exception _) {
+            //No data if using Spigot, as Server.getTPS() doesn't exist
+        }
+        Death d = new Death(id, p.getUniqueId(), p.getLocation(), null, message, inv, System.currentTimeMillis(), p.getFoodLevel(), p.getSaturation(), p.getTotalExperience(), p.getPing(), tps);
         FileManager.insert(d);
         if (ConfigManager.isOverrideVanillaMsgs()) {
             event.setDeathMessage(null);

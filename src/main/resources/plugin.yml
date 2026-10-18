@@ -63,6 +63,18 @@ permissions:
   deathlogger.exp.all:
     description: View the XP level from any player's deaths
     default: true
+  deathlogger.tps.self:
+    description: View the server TPS from your own deaths
+    default: true
+  deathlogger.tps.all:
+    description: View the server TPS from any player's deaths
+    default: true
+  deathlogger.ping.self:
+    description: View the player ping from your own deaths
+    default: true
+  deathlogger.ping.all:
+    description: View the player ping from any player's deaths
+    default: true
   deathlogger.respawn.self:
     description: View the respawn location of your own deaths
     default: true

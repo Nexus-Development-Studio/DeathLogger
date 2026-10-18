@@ -41,11 +41,10 @@ public class MainCommand extends BaseCommand {
         }
 
         OfflinePlayer oP = Bukkit.getOfflinePlayer(args[0]);
-        if (oP == null || (!oP.hasPlayedBefore() && !oP.isOnline())) {
+        if (!oP.hasPlayedBefore() && !oP.isOnline()) {
             p.sendMessage(core.prefix()+Lang.translate("noPlayer", core));
             return;
         }
-
         new PlayerGui().gui(oP.getUniqueId(), 1, true).open(p);
     }
 

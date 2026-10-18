@@ -11,10 +11,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.io.BukkitObjectInputStream;
-import org.bukkit.util.io.BukkitObjectOutputStream;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystemException;
@@ -60,6 +58,8 @@ public class FileManager {
                 if (d.getHunger() != -1) deathObj.put("hunger", d.getHunger());
                 if (d.getSaturation() != -1.0f) deathObj.put("saturation", d.getSaturation());
                 if (d.getXp() != -1) deathObj.put("xp", d.getXp());
+                if (d.getPing() != -1) deathObj.put("ping", d.getPing());
+                if (d.getTps() != 0.0) deathObj.put("tps", d.getTps());
                 deaths.put(deathObj);
             }
             playerObj.put("deaths", deaths);
@@ -132,7 +132,9 @@ public class FileManager {
                     int hunger = death.has("hunger") ? death.getInt("hunger") : -1;
                     float saturation = death.has("saturation") ? death.getFloat("saturation") : -1.0f;
                     int xp = death.has("xp") ? death.getInt("xp") : -1;
-                    core.getDeaths().add(new Death(id, uuid, loc, respawnLoc, message, inv, unix, hunger, saturation, xp));
+                    int ping = death.has("ping") ? death.getInt("ping") : -1;
+                    double tps = death.has("tps") ? death.getDouble("tps") : 0.0;
+                    core.getDeaths().add(new Death(id, uuid, loc, respawnLoc, message, inv, unix, hunger, saturation, xp, ping, tps));
                 }
             }
         } catch (IOException | ClassNotFoundException e) {
@@ -144,30 +146,6 @@ public class FileManager {
 
     public static Location getLocation(JSONObject locObj) {
         return new Location(Bukkit.getWorld(locObj.getString("world")), locObj.getInt("x"), locObj.getInt("y"), locObj.getInt("z"));
-    }
-
-    private static String serializeInventory(ItemStack[] inventory) {
-        try {
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            BukkitObjectOutputStream dataOutput = new BukkitObjectOutputStream(outputStream);
-            dataOutput.writeInt(inventory.length);
-
-            for(ItemStack item : inventory) {
-                dataOutput.writeObject(item);
-            }
-
-            dataOutput.close();
-            return Base64.getEncoder().encodeToString(outputStream.toByteArray());
-        } catch (IOException var8) {
-            throw new RuntimeException(var8);
-        }
-    }
-    private static JSONArray serializeInventoryArray(ItemStack[] inventory) {
-        JSONArray array = new JSONArray();
-        for (ItemStack item : inventory) {
-            array.put(Util.serializeItemstack(item));
-        }
-        return array;
     }
 
     public static ItemStack[] deserializeInventory(String data) throws IOException, ClassNotFoundException {

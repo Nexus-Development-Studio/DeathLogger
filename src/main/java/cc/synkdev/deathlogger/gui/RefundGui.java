@@ -6,7 +6,10 @@ import cc.synkdev.deathlogger.manager.ConfigManager;
 import cc.synkdev.deathlogger.manager.integration.SkinUtils;
 import cc.synkdev.deathlogger.object.Death;
 import cc.synkdev.deathlogger.object.RefundOption;
-import cc.synkdev.deathlogger.object.options.*;
+import cc.synkdev.deathlogger.object.options.DeathHunger;
+import cc.synkdev.deathlogger.object.options.DeathInvTake;
+import cc.synkdev.deathlogger.object.options.DeathLocation;
+import cc.synkdev.deathlogger.object.options.DeathXp;
 import cc.synkdev.kyori.adventure.text.Component;
 import cc.synkdev.nexuscore.bukkit.Lang;
 import cc.synkdev.triumph.builder.item.ItemBuilder;
@@ -45,7 +48,7 @@ public class RefundGui {
 
         Map<Integer, Class<? extends RefundOption>> refundOptions = Map.of(11, DeathHunger.class,
                 12, DeathXp.class,
-                13, DeathInv.class,
+                //13, DeathInv.class,
                 14, DeathInvTake.class,
                 15, DeathLocation.class);
 

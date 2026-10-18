@@ -3,10 +3,10 @@ package cc.synkdev.deathlogger.gui;
 import cc.synkdev.deathlogger.DeathLogger;
 import cc.synkdev.deathlogger.Util;
 import cc.synkdev.deathlogger.object.Death;
+import cc.synkdev.kyori.adventure.text.Component;
 import cc.synkdev.nexuscore.bukkit.Lang;
 import cc.synkdev.triumph.builder.item.ItemBuilder;
 import cc.synkdev.triumph.guis.Gui;
-import cc.synkdev.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -50,7 +50,10 @@ public class PlayerGui {
         for (int i = (page-1)*45; i < page*45; i++) {
             if (list.size() <= i) break;
             Death d = list.get(i);
-            gui.addItem(ItemBuilder.from(Material.SKELETON_SKULL).name(Component.text(Lang.translate("playerSpecDeath", core, oP.getName(), d.getId()+""))).asGuiItem(event -> new DeathGui().gui(d, false, (Player) event.getWhoClicked()).open(event.getWhoClicked())));
+            gui.addItem(ItemBuilder.from(Material.SKELETON_SKULL)
+                    .name(Component.text(Lang.translate("playerSpecDeath", core, oP.getName(), d.getId() + "")))
+                    .lore(Component.empty(), Component.text(ChatColor.DARK_GRAY + "  » " + d.getMsg()), Component.empty(), Component.text(Util.translate("clickOpen")))
+                    .asGuiItem(event -> new DeathGui().gui(d, false, (Player) event.getWhoClicked()).open(event.getWhoClicked())));
 
         }
 

@@ -143,6 +143,6 @@ public class Util {
     }
 
     public static String getLocString(Location loc) {
-        return loc.getWorld().getName() + ": " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ();
+        return Util.translate("world-" + loc.getWorld().getName()) + ": " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ();
     }
 }
