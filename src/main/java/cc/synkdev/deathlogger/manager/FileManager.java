@@ -49,12 +49,12 @@ public class FileManager {
                 JSONObject deathObj = new JSONObject();
                 deathObj.put("id", d.getId());
 
-                deathObj.put("location", getLocObj(d.getLoc()));
+                if (d.getLoc() != null) deathObj.put("location", getLocObj(d.getLoc()));
                 if (d.getRespawnLoc() != null) deathObj.put("respawnLocation", getLocObj(d.getRespawnLoc()));
 
-                deathObj.put("message", d.getMsg());
-                deathObj.put("timestamp", d.getUnix());
-                deathObj.put("drops", exportInventory(d.getInv()));
+                if (d.getMsg() != null) deathObj.put("message", d.getMsg());
+                if (d.getUnix() != -1) deathObj.put("timestamp", d.getUnix());
+                if (d.getInv() != null) deathObj.put("drops", exportInventory(d.getInv()));
                 if (d.getHunger() != -1) deathObj.put("hunger", d.getHunger());
                 if (d.getSaturation() != -1.0f) deathObj.put("saturation", d.getSaturation());
                 if (d.getXp() != -1) deathObj.put("xp", d.getXp());
@@ -108,15 +108,21 @@ public class FileManager {
                     JSONObject death = (JSONObject) d;
                     int id = death.getInt("id");
 
-                    JSONObject locObj = death.getJSONObject("location");
-                    Location loc = new Location(Bukkit.getWorld(locObj.getString("world")), locObj.getInt("x"), locObj.getInt("y"), locObj.getInt("z"));
+                    Location loc = null;
+
+                    if (death.has("location")) {
+                        JSONObject locObj = death.getJSONObject("location");
+                        loc = new Location(Bukkit.getWorld(locObj.getString("world")), locObj.getInt("x"), locObj.getInt("y"), locObj.getInt("z"));
+                    }
                     Location respawnLoc = null;
                     if (death.has("respawnLocation")) {
                         JSONObject respawnLocObj = death.getJSONObject("respawnLocation");
                         respawnLoc = getLocation(respawnLocObj);
                     }
-                    String message = death.getString("message");
-                    long unix = death.getLong("timestamp");
+                    String message = null;
+                    if (death.has("message")) message = death.getString("message");
+                    long unix = -1L;
+                    if (death.has("timestamp")) unix = death.getLong("timestamp");
                     DeathItem[] inv = null;
                     if (death.has("inventory")) inv = ItemTrackerManager.convert(deserializeInventory(death.getString("inventory")));
                     else {

@@ -66,18 +66,23 @@ public class DeathGui {
         }));
         gui.setItem(2, 2, ItemBuilder.from(Material.PAPER).name(Component.text(Lang.translate("deathMsg", core))).lore(Component.text(ChatColor.DARK_GRAY+d.getMsg())).asGuiItem());
 
-        List<Component> lore = new ArrayList<>();
-        if (!coords && !tp) lore.addAll(List.of(Component.text(""), Component.text(Util.translate("noPermMenu"))));
-        else if (coords && !tp) lore.addAll(List.of(Component.text("  "+Lang.translate("deathLocLore1", core, d.getLoc().getWorld().getName())), Component.text("  "+Lang.translate("deathLocLore2", core, d.getLoc().getBlockX()+"", d.getLoc().getBlockY()+"", d.getLoc().getBlockZ()+""))));
-        else if (!coords) lore.addAll(List.of(Component.text(""), Component.text(Lang.translate("deathLocLore3", core))));
-        else lore.addAll(List.of(Component.text("  "+Lang.translate("deathLocLore1", core, d.getLoc().getWorld().getName())), Component.text("  "+Lang.translate("deathLocLore2", core, d.getLoc().getBlockX()+"", d.getLoc().getBlockY()+"", d.getLoc().getBlockZ()+"")),
-                    Component.empty(), Component.text(Lang.translate("deathLocLore3", core))));
+        if (d.getLoc() != null) {
+            List<Component> lore = new ArrayList<>();
+            if (!coords && !tp) lore.addAll(List.of(Component.text(""), Component.text(Util.translate("noPermMenu"))));
+            else if (coords && !tp)
+                lore.addAll(List.of(Component.text("  " + Lang.translate("deathLocLore1", core, d.getLoc().getWorld().getName())), Component.text("  " + Lang.translate("deathLocLore2", core, d.getLoc().getBlockX() + "", d.getLoc().getBlockY() + "", d.getLoc().getBlockZ() + ""))));
+            else if (!coords)
+                lore.addAll(List.of(Component.text(""), Component.text(Lang.translate("deathLocLore3", core))));
+            else
+                lore.addAll(List.of(Component.text("  " + Lang.translate("deathLocLore1", core, d.getLoc().getWorld().getName())), Component.text("  " + Lang.translate("deathLocLore2", core, d.getLoc().getBlockX() + "", d.getLoc().getBlockY() + "", d.getLoc().getBlockZ() + "")),
+                        Component.empty(), Component.text(Lang.translate("deathLocLore3", core))));
 
-        gui.setItem(2, 6, ItemBuilder.from(Material.COMPASS)
-                .name(Component.text(Lang.translate("deathLoc", core)))
-                .lore(lore).asGuiItem(event -> {
-                            if (tp) event.getWhoClicked().teleport(d.getLoc());
-                }));
+            gui.setItem(2, 6, ItemBuilder.from(Material.COMPASS)
+                    .name(Component.text(Lang.translate("deathLoc", core)))
+                    .lore(lore).asGuiItem(event -> {
+                        if (tp) event.getWhoClicked().teleport(d.getLoc());
+                    }));
+        }
 
         if (d.getRespawnLoc() != null) {
             List<Component> loreRespawn = new ArrayList<>();
